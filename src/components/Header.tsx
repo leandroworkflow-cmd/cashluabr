@@ -1,4 +1,4 @@
-import { Flame, Search, User } from "lucide-react";
+import { Flame, Search, User, MessageCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 
