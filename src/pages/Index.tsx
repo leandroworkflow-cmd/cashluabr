@@ -67,6 +67,7 @@ const Index = () => {
 
       <Footer />
       <CookieBanner />
+      <WelcomeBanner />
     </div>
   );
 };
