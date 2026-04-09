@@ -10,7 +10,7 @@ export function Footer() {
             <div className="bg-primary rounded-lg p-1.5">
               <Flame className="h-4 w-4 text-primary-foreground" />
             </div>
-            <span className="font-heading font-bold text-foreground">PromoBrasil</span>
+            <span className="font-heading font-bold text-foreground">CashLua</span>
           </div>
 
           <nav className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-muted-foreground">
@@ -27,7 +27,7 @@ export function Footer() {
         </div>
 
         <p className="mt-6 text-xs text-muted-foreground">
-          © {new Date().getFullYear()} PromoBrasil. Todos os direitos reservados.
+          © {new Date().getFullYear()} CashLua. Todos os direitos reservados.
         </p>
       </div>
     </footer>

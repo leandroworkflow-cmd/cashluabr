@@ -18,7 +18,7 @@ export function Header({ search, onSearchChange }: HeaderProps) {
             <Flame className="h-5 w-5 text-primary-foreground" />
           </div>
           <span className="font-heading font-extrabold text-lg text-foreground hidden sm:block">
-            PromoBrasil
+            CashLua
           </span>
         </Link>
 
