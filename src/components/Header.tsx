@@ -36,13 +36,22 @@ export function Header({ search, onSearchChange }: HeaderProps) {
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1">
           <button
             className="sm:hidden p-2 rounded-lg hover:bg-secondary transition-colors"
             onClick={() => setMobileSearchOpen(!mobileSearchOpen)}
           >
             <Search className="h-5 w-5 text-muted-foreground" />
           </button>
+          <a
+            href="https://whatsapp.com/channel/SEU_CODIGO"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="p-2 rounded-lg hover:bg-secondary transition-colors"
+            title="Siga no WhatsApp"
+          >
+            <MessageCircle className="h-5 w-5 text-success" />
+          </a>
           <Link
             to="/perfil"
             className="p-2 rounded-lg hover:bg-secondary transition-colors"
