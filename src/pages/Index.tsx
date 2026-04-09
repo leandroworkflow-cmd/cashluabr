@@ -4,6 +4,7 @@ import { FilterBar } from "@/components/FilterBar";
 import { DealCard } from "@/components/DealCard";
 import { Footer } from "@/components/Footer";
 import { CookieBanner } from "@/components/CookieBanner";
+import { WelcomeBanner } from "@/components/WelcomeBanner";
 import { useDeals, filterDeals } from "@/hooks/useDeals";
 import { FilterType, Category } from "@/lib/types";
 import { Loader2 } from "lucide-react";
@@ -66,6 +67,7 @@ const Index = () => {
 
       <Footer />
       <CookieBanner />
+      <WelcomeBanner />
     </div>
   );
 };
