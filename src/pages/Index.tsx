@@ -5,6 +5,7 @@ import { DealCard } from "@/components/DealCard";
 import { Footer } from "@/components/Footer";
 import { CookieBanner } from "@/components/CookieBanner";
 import { WelcomeBanner } from "@/components/WelcomeBanner";
+import { AdSlot } from "@/components/AdSlot";
 import { useDeals, filterDeals } from "@/hooks/useDeals";
 import { FilterType, Category } from "@/lib/types";
 import { Loader2 } from "lucide-react";
@@ -23,6 +24,9 @@ const Index = () => {
 
       <main className="flex-1">
         <div className="container py-6 space-y-5">
+          {/* AdSense - Topo */}
+          <AdSlot />
+
           <div>
             <h1 className="text-2xl sm:text-3xl font-heading font-extrabold text-foreground">
               🔥 Melhores Ofertas de Hoje
@@ -58,10 +62,21 @@ const Index = () => {
           )}
 
           <div className="space-y-3">
-            {filtered.map((deal) => (
-              <DealCard key={deal.id} deal={deal} />
+            {filtered.map((deal, index) => (
+              <div key={deal.id}>
+                <DealCard deal={deal} />
+                {/* AdSense a cada 5 ofertas */}
+                {(index + 1) % 5 === 0 && index < filtered.length - 1 && (
+                  <div className="mt-3">
+                    <AdSlot />
+                  </div>
+                )}
+              </div>
             ))}
           </div>
+
+          {/* AdSense - Final */}
+          <AdSlot />
         </div>
       </main>
 
