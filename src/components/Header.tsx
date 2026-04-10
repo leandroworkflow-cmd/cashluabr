@@ -44,7 +44,7 @@ export function Header({ search, onSearchChange }: HeaderProps) {
             <Search className="h-5 w-5 text-muted-foreground" />
           </button>
           <a
-            href="https://whatsapp.com/channel/SEU_CODIGO"
+            href="https://whatsapp.com/channel/0029VbCUmaZA2pLGCnyYDb2L"
             target="_blank"
             rel="noopener noreferrer"
             className="p-2 rounded-lg hover:bg-secondary transition-colors"
