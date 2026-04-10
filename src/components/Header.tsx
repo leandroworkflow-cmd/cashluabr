@@ -1,6 +1,7 @@
 import { Search, User, MessageCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useState } from "react";
+import moonLogo from "@/assets/moon-logo.png";
 
 interface HeaderProps {
   search: string;
@@ -14,8 +15,8 @@ export function Header({ search, onSearchChange }: HeaderProps) {
     <header className="sticky top-0 z-50 bg-card border-b border-border shadow-sm">
       <div className="container flex items-center justify-between h-14 gap-3">
         <Link to="/" className="flex items-center gap-2 flex-shrink-0">
-          <div className="bg-primary rounded-lg p-1.5 flex items-center justify-center">
-            <span className="text-lg leading-none">🌙</span>
+          <div className="bg-primary rounded-lg p-1 flex items-center justify-center w-8 h-8">
+            <img src={moonLogo} alt="CashLua" className="w-5 h-5 object-contain" />
           </div>
           <span className="font-heading font-extrabold text-lg text-foreground hidden sm:block">
             CashLua
