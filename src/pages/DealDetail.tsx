@@ -92,9 +92,15 @@ const DealDetail = () => {
                 >
                   Pegar Oferta <ExternalLink className="h-4 w-4" />
                 </a>
-                <button className="inline-flex items-center gap-1.5 bg-secondary text-secondary-foreground px-4 py-3 rounded-lg hover:bg-border transition-colors text-sm font-medium">
-                  <Share2 className="h-4 w-4" /> Compartilhar
-                </button>
+                <a
+                  href={`https://wa.me/?text=${encodeURIComponent(`🔥 Olha essa oferta: ${deal.titulo} por R$ ${deal.preco}! 👉 ${deal.link}`)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-white px-4 py-3 rounded-lg hover:brightness-110 transition-all text-sm font-bold"
+                  style={{ backgroundColor: '#25D366' }}
+                >
+                  <Share2 className="h-4 w-4" /> Compartilhar no WhatsApp
+                </a>
               </div>
 
               {/* Votes */}
