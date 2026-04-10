@@ -83,6 +83,16 @@ export function DealCard({ deal }: DealCardProps) {
                 {deal.comentarios || 0}
               </span>
               <a
+                href={`https://wa.me/?text=${encodeURIComponent(`🔥 Olha essa oferta: ${deal.titulo} por R$ ${deal.preco}! 👉 ${deal.link}`)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-white font-heading font-bold text-sm px-3 py-2 rounded-lg hover:brightness-110 transition-all shadow-sm"
+                style={{ backgroundColor: '#25D366' }}
+              >
+                <MessageCircle className="h-3.5 w-3.5" />
+                <span className="hidden sm:inline">Compartilhar</span>
+              </a>
+              <a
                 href={deal.link}
                 target="_blank"
                 rel="noopener noreferrer"
