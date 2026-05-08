@@ -10,17 +10,6 @@ export function WelcomeBanner() {
     }
   }, []);
 
-  useEffect(() => {
-    if (visible) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [visible]);
-
   const dismiss = () => {
     localStorage.setItem("welcome_seen", "true");
     setVisible(false);
@@ -29,13 +18,10 @@ export function WelcomeBanner() {
   if (!visible) return null;
 
   return (
-    <div
-      className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60"
-      onClick={dismiss}
-    >
+    <div className="fixed inset-x-0 bottom-20 z-[60] px-4 sm:bottom-6">
       <div
-        className="relative w-full max-w-md rounded-xl bg-primary p-6 sm:p-8 shadow-2xl text-primary-foreground"
-        onClick={(e) => e.stopPropagation()}
+        className="relative mx-auto w-full max-w-md rounded-xl bg-primary p-5 shadow-2xl text-primary-foreground sm:p-6"
+        role="status"
       >
         <button
           onClick={dismiss}
