@@ -5,9 +5,15 @@ export function WelcomeBanner() {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
+    document.body.style.overflow = "";
+
     if (!localStorage.getItem("welcome_seen")) {
       setVisible(true);
     }
+
+    return () => {
+      document.body.style.overflow = "";
+    };
   }, []);
 
   const dismiss = () => {
