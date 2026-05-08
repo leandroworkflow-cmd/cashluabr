@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Header } from "@/components/Header";
 import { FilterBar } from "@/components/FilterBar";
 import { DealCard } from "@/components/DealCard";
@@ -10,19 +10,24 @@ import { useDeals, filterDeals } from "@/hooks/useDeals";
 import { FilterType, Category } from "@/lib/types";
 import { Loader2 } from "lucide-react";
 
-const MAX_VISIBLE_DEALS = 80;
+const DEALS_PAGE_SIZE = 24;
 
 const Index = () => {
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState<FilterType>("quentes");
   const [category, setCategory] = useState<Category>("Todos");
+  const [visibleCount, setVisibleCount] = useState(DEALS_PAGE_SIZE);
   const { data: deals, isLoading, error } = useDeals();
 
   const filtered = useMemo(
     () => (deals ? filterDeals(deals, filter, category, search) : []),
     [deals, filter, category, search]
   );
-  const visibleDeals = filtered.slice(0, MAX_VISIBLE_DEALS);
+  const visibleDeals = filtered.slice(0, visibleCount);
+
+  useEffect(() => {
+    setVisibleCount(DEALS_PAGE_SIZE);
+  }, [filter, category, search]);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -80,6 +85,18 @@ const Index = () => {
               </div>
             ))}
           </div>
+
+          {visibleDeals.length < filtered.length && (
+            <div className="flex justify-center pt-2">
+              <button
+                type="button"
+                onClick={() => setVisibleCount((count) => count + DEALS_PAGE_SIZE)}
+                className="rounded-lg bg-primary px-5 py-3 font-heading text-sm font-bold text-primary-foreground shadow-sm transition-all hover:brightness-110"
+              >
+                Carregar mais ofertas
+              </button>
+            </div>
+          )}
 
           {/* AdSense - Final */}
           <AdSlot />
