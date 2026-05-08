@@ -5,30 +5,24 @@ export function WelcomeBanner() {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    document.body.style.overflow = "";
+    const wasSeen = window.localStorage.getItem("welcome_seen");
 
-    if (!localStorage.getItem("welcome_seen")) {
+    if (!wasSeen) {
       setVisible(true);
     }
-
-    return () => {
-      document.body.style.overflow = "";
-    };
   }, []);
 
   const dismiss = () => {
-    localStorage.setItem("welcome_seen", "true");
+    window.localStorage.setItem("welcome_seen", "true");
     setVisible(false);
   };
 
   if (!visible) return null;
 
   return (
-    <div className="fixed inset-x-0 bottom-20 z-[60] px-4 sm:bottom-6">
-      <div
-        className="relative mx-auto w-full max-w-md rounded-xl bg-primary p-5 shadow-2xl text-primary-foreground sm:p-6"
-        role="status"
-      >
+    <section className="border-b border-border bg-primary text-primary-foreground">
+      <div className="container py-4">
+        <div className="relative pr-10">
         <button
           onClick={dismiss}
           aria-label="Fechar"
@@ -46,11 +40,11 @@ export function WelcomeBanner() {
         </p>
         <button
           onClick={dismiss}
-          className="w-full py-3 rounded-lg bg-primary-foreground text-primary font-heading font-bold text-sm sm:text-base hover:opacity-90 transition-opacity"
+          className="w-full rounded-lg bg-primary-foreground py-3 text-sm font-bold text-primary transition-opacity hover:opacity-90 sm:w-auto sm:px-5 sm:text-base"
         >
           Entendi, vamos às ofertas!
         </button>
       </div>
-    </div>
+    </section>
   );
 }
