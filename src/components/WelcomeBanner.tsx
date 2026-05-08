@@ -44,6 +44,7 @@ export function WelcomeBanner() {
         >
           Entendi, vamos às ofertas!
         </button>
+        </div>
       </div>
     </section>
   );
