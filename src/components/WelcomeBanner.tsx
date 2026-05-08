@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
+import { X } from "lucide-react";
 
 export function WelcomeBanner() {
   const [visible, setVisible] = useState(false);
-  const [closing, setClosing] = useState(false);
 
   useEffect(() => {
     if (!localStorage.getItem("welcome_seen")) {
@@ -10,25 +10,41 @@ export function WelcomeBanner() {
     }
   }, []);
 
+  useEffect(() => {
+    if (visible) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [visible]);
+
   const dismiss = () => {
-    setClosing(true);
-    setTimeout(() => {
-      localStorage.setItem("welcome_seen", "true");
-      setVisible(false);
-    }, 300);
+    localStorage.setItem("welcome_seen", "true");
+    setVisible(false);
   };
 
   if (!visible) return null;
 
   return (
     <div
-      className={`fixed inset-0 z-[60] flex items-center justify-center p-4 transition-opacity duration-300 ${closing ? "opacity-0" : "opacity-100"}`}
-      style={{ backgroundColor: "rgba(0,0,0,0.6)" }}
+      className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60"
+      onClick={dismiss}
     >
       <div
-        className={`w-full max-w-md rounded-xl bg-primary p-6 sm:p-8 shadow-2xl text-primary-foreground transition-all duration-300 ${closing ? "scale-95 opacity-0" : "scale-100 opacity-100"}`}
+        className="relative w-full max-w-md rounded-xl bg-primary p-6 sm:p-8 shadow-2xl text-primary-foreground"
+        onClick={(e) => e.stopPropagation()}
       >
-        <h2 className="text-xl sm:text-2xl font-heading font-extrabold mb-3">
+        <button
+          onClick={dismiss}
+          aria-label="Fechar"
+          className="absolute top-3 right-3 p-1 rounded-md hover:bg-black/10 transition-colors"
+        >
+          <X className="w-5 h-5" />
+        </button>
+        <h2 className="text-xl sm:text-2xl font-heading font-extrabold mb-3 pr-8">
           Bem-vindo ao CashLua!
         </h2>
         <p className="text-sm sm:text-base leading-relaxed mb-6 opacity-90">
