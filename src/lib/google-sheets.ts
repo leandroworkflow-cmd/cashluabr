@@ -2,6 +2,7 @@ import { Deal } from "./types";
 
 const SHEET_ID = "1x_45PJoQmKoFrCXeMAtvOXMlWrFYGB2tKcA6fFoS39s";
 const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
+const MAX_IMPORTED_DEALS = 300;
 
 export async function fetchDealsFromSheet(): Promise<Deal[]> {
   try {
@@ -15,7 +16,7 @@ export async function fetchDealsFromSheet(): Promise<Deal[]> {
     );
     const data = JSON.parse(jsonString);
 
-    const rows = data.table.rows;
+    const rows = data.table.rows.slice(0, MAX_IMPORTED_DEALS);
     const deals: Deal[] = rows.map((row: any, index: number) => {
       const cells = row.c;
       return {

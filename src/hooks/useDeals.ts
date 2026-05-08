@@ -2,6 +2,8 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchDealsFromSheet } from "@/lib/google-sheets";
 import { Deal, FilterType, Category } from "@/lib/types";
 
+const MAX_DEALS_TO_PROCESS = 300;
+
 export function useDeals() {
   return useQuery({
     queryKey: ["deals"],
@@ -17,7 +19,7 @@ export function filterDeals(
   category: Category,
   search: string
 ): Deal[] {
-  let filtered = [...deals];
+  let filtered = deals;
 
   if (category !== "Todos") {
     filtered = filtered.filter((d) => d.categoria === category);
@@ -30,15 +32,15 @@ export function filterDeals(
 
   switch (filter) {
     case "quentes":
-      filtered.sort((a, b) => (b.temperatura || 0) - (a.temperatura || 0));
+      filtered = [...filtered].sort((a, b) => (b.temperatura || 0) - (a.temperatura || 0));
       break;
     case "recentes":
-      filtered.sort((a, b) => new Date(b.data).getTime() - new Date(a.data).getTime());
+      filtered = [...filtered].sort((a, b) => new Date(b.data).getTime() - new Date(a.data).getTime());
       break;
     case "comentadas":
-      filtered.sort((a, b) => (b.comentarios || 0) - (a.comentarios || 0));
+      filtered = [...filtered].sort((a, b) => (b.comentarios || 0) - (a.comentarios || 0));
       break;
   }
 
-  return filtered;
+  return filtered.slice(0, MAX_DEALS_TO_PROCESS);
 }
