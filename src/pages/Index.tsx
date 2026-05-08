@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Header } from "@/components/Header";
 import { FilterBar } from "@/components/FilterBar";
 import { DealCard } from "@/components/DealCard";
@@ -10,13 +10,19 @@ import { useDeals, filterDeals } from "@/hooks/useDeals";
 import { FilterType, Category } from "@/lib/types";
 import { Loader2 } from "lucide-react";
 
+const MAX_VISIBLE_DEALS = 80;
+
 const Index = () => {
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState<FilterType>("quentes");
   const [category, setCategory] = useState<Category>("Todos");
   const { data: deals, isLoading, error } = useDeals();
 
-  const filtered = deals ? filterDeals(deals, filter, category, search) : [];
+  const filtered = useMemo(
+    () => (deals ? filterDeals(deals, filter, category, search) : []),
+    [deals, filter, category, search]
+  );
+  const visibleDeals = filtered.slice(0, MAX_VISIBLE_DEALS);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -62,11 +68,11 @@ const Index = () => {
           )}
 
           <div className="space-y-3">
-            {filtered.map((deal, index) => (
+            {visibleDeals.map((deal, index) => (
               <div key={deal.id}>
                 <DealCard deal={deal} />
                 {/* AdSense a cada 5 ofertas */}
-                {(index + 1) % 5 === 0 && index < filtered.length - 1 && (
+                {(index + 1) % 5 === 0 && index < visibleDeals.length - 1 && (
                   <div className="mt-3">
                     <AdSlot />
                   </div>
