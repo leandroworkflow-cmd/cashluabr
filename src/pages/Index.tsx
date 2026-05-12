@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Header } from "@/components/Header";
+import { WelcomeBanner } from "@/components/WelcomeBanner";
 import { FilterBar } from "@/components/FilterBar";
 import { DealCard } from "@/components/DealCard";
 import { Footer } from "@/components/Footer";
