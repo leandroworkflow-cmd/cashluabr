@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Header } from "@/components/Header";
+import { WelcomeBanner } from "@/components/WelcomeBanner";
 import { FilterBar } from "@/components/FilterBar";
 import { DealCard } from "@/components/DealCard";
 import { Footer } from "@/components/Footer";
@@ -31,6 +32,7 @@ const Index = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <Header search={search} onSearchChange={setSearch} />
+      <WelcomeBanner />
 
       <main className="flex-1">
         <div className="container py-6 space-y-5">
