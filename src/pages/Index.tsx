@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Header } from "@/components/Header";
 import { WelcomeBanner } from "@/components/WelcomeBanner";
+import { NetshoesBanner } from "@/components/NetshoesBanner";
 import { FilterBar } from "@/components/FilterBar";
 import { DealCard } from "@/components/DealCard";
 import { Footer } from "@/components/Footer";
@@ -36,8 +37,8 @@ const Index = () => {
 
       <main className="flex-1">
         <div className="container py-6 space-y-5">
-          {/* AdSense - Topo */}
-          <AdSlot />
+          {/* Banner Afiliado - Netshoes */}
+          <NetshoesBanner />
 
           <div>
             <h1 className="text-2xl sm:text-3xl font-heading font-extrabold text-foreground">
