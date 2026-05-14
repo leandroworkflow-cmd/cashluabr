@@ -19,14 +19,14 @@ export function NetshoesBanner() {
       className="block w-full rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300"
       style={{ background: "linear-gradient(135deg, #ff4d4d 0%, #cc0000 100%)" }}
     >
-      {/* Pixel de rastreamento - invisivel */}
+      {/* Pixel de rastreamento - invisivel e fora do fluxo */}
       <img
         ref={pixelRef}
         src={TRACKING_PIXEL}
         alt=""
         width={1}
         height={1}
-        className="absolute opacity-0 pointer-events-none"
+        className="sr-only"
         aria-hidden="true"
       />
 
