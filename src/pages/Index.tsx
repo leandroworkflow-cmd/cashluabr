@@ -37,8 +37,8 @@ const Index = () => {
 
       <main className="flex-1">
         <div className="container py-6 space-y-5">
-          {/* AdSense - Topo */}
-          <AdSlot />
+          {/* Banner Afiliado - Netshoes */}
+          <NetshoesBanner />
 
           <div>
             <h1 className="text-2xl sm:text-3xl font-heading font-extrabold text-foreground">
