@@ -32,12 +32,17 @@ export function NetshoesBanner() {
 
       <div className="flex items-center justify-between px-5 py-4 sm:px-8 sm:py-5">
         <div className="flex items-center gap-3 sm:gap-4">
-          <div className="flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white/20 backdrop-blur-sm">
-            <ShoppingBag className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
+          <div className="flex items-center justify-center px-3 py-2 sm:px-4 sm:py-2.5 rounded-lg bg-white shadow-sm">
+            <span
+              className="font-heading font-extrabold text-lg sm:text-xl tracking-tight lowercase leading-none"
+              style={{ color: "#cc0000", fontStyle: "italic" }}
+            >
+              netshoes
+            </span>
           </div>
           <div>
             <h3 className="text-white font-heading font-extrabold text-base sm:text-lg leading-tight">
-              Netshoes
+              Ofertas exclusivas
             </h3>
             <p className="text-white/90 text-xs sm:text-sm mt-0.5">
               As melhores ofertas em artigos esportivos
