@@ -3,6 +3,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { useDeals } from "@/hooks/useDeals";
 import { Flame, ExternalLink, ArrowLeft, MessageCircle, ThumbsUp, ThumbsDown, Share2 } from "lucide-react";
+import { shortenUrl } from "@/lib/shorten";
 import { useState } from "react";
 
 const DealDetail = () => {
@@ -92,15 +93,22 @@ const DealDetail = () => {
                 >
                   Pegar Oferta <ExternalLink className="h-4 w-4" />
                 </a>
-                <a
-                  href={`https://wa.me/?text=${encodeURIComponent(`🔥 Olha essa oferta: ${deal.titulo} por R$ ${deal.preco}! 👉 ${deal.link}`)}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <button
+                  type="button"
+                  onClick={async () => {
+                    const short = await shortenUrl(deal.link);
+                    const text = `🔥 Olha essa oferta: ${deal.titulo} por R$ ${deal.preco}! 👉 ${short}`;
+                    window.open(
+                      `https://wa.me/?text=${encodeURIComponent(text)}`,
+                      "_blank",
+                      "noopener,noreferrer"
+                    );
+                  }}
                   className="inline-flex items-center gap-1.5 text-white px-4 py-3 rounded-lg hover:brightness-110 transition-all text-sm font-bold"
                   style={{ backgroundColor: '#25D366' }}
                 >
                   <Share2 className="h-4 w-4" /> Compartilhar no WhatsApp
-                </a>
+                </button>
               </div>
 
               {/* Votes */}
