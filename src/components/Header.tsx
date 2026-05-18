@@ -15,10 +15,8 @@ export function Header({ search, onSearchChange }: HeaderProps) {
     <header className="sticky top-0 z-50 bg-card border-b border-border shadow-sm">
       <div className="container flex items-center justify-between h-14 gap-3">
         <Link to="/" className="flex items-center gap-2 flex-shrink-0">
-          <div className="bg-primary rounded-lg p-1 flex items-center justify-center w-8 h-8">
-            <img src={moonLogo} alt="CashLua" className="w-5 h-5 object-contain" />
-          </div>
-          <span className="font-heading font-extrabold text-lg text-foreground hidden sm:block">
+          <img src={moonLogo} alt="CashLua" className="w-8 h-8 object-contain rounded-lg" />
+          <span className="font-heading font-extrabold text-lg text-foreground">
             CashLua
           </span>
         </Link>
