@@ -1,13 +1,13 @@
-// Encurta URLs usando is.gd (gratuito, sem chave, CORS habilitado).
-// Fallback: retorna a URL original se a API falhar.
+import { supabase } from "@/integrations/supabase/client";
+
+// Encurta URLs via Bitly (edge function). Fallback: URL original.
 export async function shortenUrl(url: string): Promise<string> {
   try {
-    const res = await fetch(
-      `https://is.gd/create.php?format=simple&url=${encodeURIComponent(url)}`
-    );
-    if (!res.ok) return url;
-    const short = (await res.text()).trim();
-    return short.startsWith("http") ? short : url;
+    const { data, error } = await supabase.functions.invoke("shorten", {
+      body: { url },
+    });
+    if (error) return url;
+    return (data?.short_url as string) || url;
   } catch {
     return url;
   }
