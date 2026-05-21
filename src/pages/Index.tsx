@@ -7,9 +7,11 @@ import { DealCard } from "@/components/DealCard";
 import { Footer } from "@/components/Footer";
 import { CookieBanner } from "@/components/CookieBanner";
 import { AdSlot } from "@/components/AdSlot";
+import { SEO } from "@/components/SEO";
 import { useDeals, filterDeals } from "@/hooks/useDeals";
 import { FilterType, Category } from "@/lib/types";
 import { Loader2 } from "lucide-react";
+
 
 const DEALS_PAGE_SIZE = 24;
 
