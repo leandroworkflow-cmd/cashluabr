@@ -8,7 +8,13 @@ const Profile = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
+      <SEO
+        title="Meu Perfil | CashLua"
+        description="Veja seu perfil no CashLua: ofertas compartilhadas, comentários e atividade na comunidade de promoções."
+        path="/perfil"
+      />
       <Header search={search} onSearchChange={setSearch} />
+
 
       <main className="flex-1">
         <div className="container py-8 max-w-2xl">

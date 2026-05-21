@@ -41,7 +41,29 @@ const DealDetail = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
+      <SEO
+        title={`${deal.titulo} - R$ ${deal.preco} | CashLua`}
+        description={`${deal.titulo} por R$ ${deal.preco} na ${deal.loja || "loja"}. Confira essa oferta quente no CashLua.`}
+        path={`/oferta/${deal.id}`}
+        image={deal.imagem || undefined}
+        type="product"
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "Product",
+          name: deal.titulo,
+          image: deal.imagem,
+          offers: {
+            "@type": "Offer",
+            price: deal.preco,
+            priceCurrency: "BRL",
+            availability: "https://schema.org/InStock",
+            url: deal.link,
+            seller: { "@type": "Organization", name: deal.loja || "Loja" },
+          },
+        }}
+      />
       <Header search={search} onSearchChange={setSearch} />
+
 
       <main className="flex-1">
         <div className="container py-6 max-w-3xl">
