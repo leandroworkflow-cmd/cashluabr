@@ -7,9 +7,11 @@ import { DealCard } from "@/components/DealCard";
 import { Footer } from "@/components/Footer";
 import { CookieBanner } from "@/components/CookieBanner";
 import { AdSlot } from "@/components/AdSlot";
+import { SEO } from "@/components/SEO";
 import { useDeals, filterDeals } from "@/hooks/useDeals";
 import { FilterType, Category } from "@/lib/types";
 import { Loader2 } from "lucide-react";
+
 
 const DEALS_PAGE_SIZE = 24;
 
@@ -32,8 +34,21 @@ const Index = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
+      <SEO
+        title="CashLua - Promoções, Cupons e Ofertas do Dia"
+        description="As melhores promoções, cupons de desconto e ofertas do Brasil. Ofertas quentes selecionadas pela comunidade CashLua, atualizadas diariamente."
+        path="/"
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "CollectionPage",
+          name: "Melhores Ofertas de Hoje",
+          description: "Promoções e cupons selecionados pela comunidade CashLua.",
+          url: "https://cashluabr.lovable.app/",
+        }}
+      />
       <Header search={search} onSearchChange={setSearch} />
       <WelcomeBanner />
+
 
       <main className="flex-1">
         <div className="container py-6 space-y-5">
