@@ -1,5 +1,7 @@
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { SEO } from "@/components/SEO";
+
 import { User, Flame, MessageCircle, Clock } from "lucide-react";
 import { useState } from "react";
 
