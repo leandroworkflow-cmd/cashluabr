@@ -1,6 +1,7 @@
 import { Flame, MessageCircle, ExternalLink, ThumbsUp, ThumbsDown } from "lucide-react";
 import { Deal } from "@/lib/types";
 import { Link } from "react-router-dom";
+import { shortenUrl } from "@/lib/shorten";
 
 interface DealCardProps {
   deal: Deal;
@@ -82,16 +83,23 @@ export function DealCard({ deal }: DealCardProps) {
                 <MessageCircle className="h-3.5 w-3.5" />
                 {deal.comentarios || 0}
               </span>
-              <a
-                href={`https://wa.me/?text=${encodeURIComponent(`🔥 Olha essa oferta: ${deal.titulo} por R$ ${deal.preco}! 👉 ${deal.link}`)}`}
-                target="_blank"
-                rel="noopener noreferrer"
+              <button
+                type="button"
+                onClick={async () => {
+                  const short = await shortenUrl(deal.link);
+                  const text = `🔥 Olha essa oferta: ${deal.titulo} por R$ ${deal.preco}! 👉 ${short}`;
+                  window.open(
+                    `https://wa.me/?text=${encodeURIComponent(text)}`,
+                    "_blank",
+                    "noopener,noreferrer"
+                  );
+                }}
                 className="inline-flex items-center gap-1.5 text-white font-heading font-bold text-sm px-3 py-2 rounded-lg hover:brightness-110 transition-all shadow-sm"
                 style={{ backgroundColor: '#25D366' }}
               >
                 <MessageCircle className="h-3.5 w-3.5" />
                 <span className="hidden sm:inline">Compartilhar</span>
-              </a>
+              </button>
               <a
                 href={deal.link}
                 target="_blank"
