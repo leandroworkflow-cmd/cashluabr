@@ -14,14 +14,17 @@ export function Footer() {
           </div>
 
           <nav className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-muted-foreground">
+            <Link to="/sobre" className="hover:text-foreground transition-colors">
+              Quem Somos
+            </Link>
+            <Link to="/contato" className="hover:text-foreground transition-colors">
+              Contato
+            </Link>
             <Link to="/termos" className="hover:text-foreground transition-colors">
               Termos de Uso
             </Link>
             <Link to="/privacidade" className="hover:text-foreground transition-colors">
               Política de Privacidade
-            </Link>
-            <Link to="/sobre" className="hover:text-foreground transition-colors">
-              Sobre
             </Link>
           </nav>
         </div>
