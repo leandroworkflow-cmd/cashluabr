@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Header } from "@/components/Header";
 import { WelcomeBanner } from "@/components/WelcomeBanner";
 import { NetshoesBanner } from "@/components/NetshoesBanner";
+import { PartnerStores } from "@/components/PartnerStores";
 import { FilterBar } from "@/components/FilterBar";
 import { DealCard } from "@/components/DealCard";
 import { Footer } from "@/components/Footer";
@@ -55,6 +56,12 @@ const Index = () => {
           {/* Banner Afiliado - Netshoes */}
           <NetshoesBanner />
 
+          {/* Lojas parceiras */}
+          <PartnerStores />
+
+          {/* AdSense - Topo */}
+          <AdSlot slot={import.meta.env.VITE_ADSENSE_SLOT_TOP} />
+
           <div>
             <h1 className="text-2xl sm:text-3xl font-heading font-extrabold text-foreground">
               🔥 Melhores Ofertas de Hoje
@@ -96,7 +103,7 @@ const Index = () => {
                 {/* AdSense a cada 5 ofertas */}
                 {(index + 1) % 5 === 0 && index < visibleDeals.length - 1 && (
                   <div className="mt-3">
-                    <AdSlot />
+                    <AdSlot slot={import.meta.env.VITE_ADSENSE_SLOT_FEED} />
                   </div>
                 )}
               </div>
@@ -116,7 +123,7 @@ const Index = () => {
           )}
 
           {/* AdSense - Final */}
-          <AdSlot />
+          <AdSlot slot={import.meta.env.VITE_ADSENSE_SLOT_BOTTOM} layout="rectangle" />
         </div>
       </main>
 
