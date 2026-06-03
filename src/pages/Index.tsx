@@ -103,7 +103,7 @@ const Index = () => {
                 {/* AdSense a cada 5 ofertas */}
                 {(index + 1) % 5 === 0 && index < visibleDeals.length - 1 && (
                   <div className="mt-3">
-                    <AdSlot />
+                    <AdSlot slot={import.meta.env.VITE_ADSENSE_SLOT_FEED} />
                   </div>
                 )}
               </div>
@@ -123,7 +123,7 @@ const Index = () => {
           )}
 
           {/* AdSense - Final */}
-          <AdSlot />
+          <AdSlot slot={import.meta.env.VITE_ADSENSE_SLOT_BOTTOM} layout="rectangle" />
         </div>
       </main>
 
