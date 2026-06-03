@@ -56,6 +56,12 @@ const Index = () => {
           {/* Banner Afiliado - Netshoes */}
           <NetshoesBanner />
 
+          {/* Lojas parceiras */}
+          <PartnerStores />
+
+          {/* AdSense - Topo */}
+          <AdSlot slot={import.meta.env.VITE_ADSENSE_SLOT_TOP} />
+
           <div>
             <h1 className="text-2xl sm:text-3xl font-heading font-extrabold text-foreground">
               🔥 Melhores Ofertas de Hoje
