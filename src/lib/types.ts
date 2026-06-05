@@ -1,5 +1,6 @@
 export interface Deal {
   id: string;
+  slug: string;
   titulo: string;
   preco: string;
   link: string;
