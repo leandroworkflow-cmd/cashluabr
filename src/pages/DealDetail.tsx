@@ -37,7 +37,7 @@ const DealDetail = () => {
   const [commentText, setCommentText] = useState("");
 
   useEffect(() => {
-    if (!id) return;
+    if (!dealId) return;
     try {
       const raw = localStorage.getItem(storageKey);
       if (raw) {
@@ -48,7 +48,7 @@ const DealDetail = () => {
       }
     } catch {}
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id]);
+  }, [dealId]);
 
   const persist = (next: { vote?: "up" | "down" | null; tempBoost?: number; comments?: Comment[] }) => {
     const merged = {
