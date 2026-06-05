@@ -17,10 +17,16 @@ interface Comment {
 
 
 const DealDetail = () => {
-  const { id } = useParams<{ id: string }>();
+  const { slug } = useParams<{ slug: string }>();
   const [search, setSearch] = useState("");
   const { data: deals, isLoading } = useDeals();
-  const deal = deals?.find((d) => d.id === id);
+
+  // Find deal by slug first, fallback to extracting ID from the end of the slug
+  const deal = deals?.find((d) => d.slug === slug) ||
+    (() => {
+      const lastSegment = slug?.split("-").pop();
+      return lastSegment ? deals?.find((d) => d.id === lastSegment) : undefined;
+    })();
 
   const storageKey = `deal-engagement-${id}`;
   const [vote, setVote] = useState<"up" | "down" | null>(null);
