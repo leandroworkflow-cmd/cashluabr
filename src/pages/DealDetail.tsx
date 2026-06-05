@@ -17,12 +17,19 @@ interface Comment {
 
 
 const DealDetail = () => {
-  const { id } = useParams<{ id: string }>();
+  const { slug } = useParams<{ slug: string }>();
   const [search, setSearch] = useState("");
   const { data: deals, isLoading } = useDeals();
-  const deal = deals?.find((d) => d.id === id);
 
-  const storageKey = `deal-engagement-${id}`;
+  // Find deal by slug first, fallback to extracting ID from the end of the slug
+  const deal = deals?.find((d) => d.slug === slug) ||
+    (() => {
+      const lastSegment = slug?.split("-").pop();
+      return lastSegment ? deals?.find((d) => d.id === lastSegment) : undefined;
+    })();
+
+  const dealId = deal?.id || slug?.split("-").pop() || slug || "unknown";
+  const storageKey = `deal-engagement-${dealId}`;
   const [vote, setVote] = useState<"up" | "down" | null>(null);
   const [tempBoost, setTempBoost] = useState(0);
   const [comments, setComments] = useState<Comment[]>([]);
@@ -30,7 +37,7 @@ const DealDetail = () => {
   const [commentText, setCommentText] = useState("");
 
   useEffect(() => {
-    if (!id) return;
+    if (!dealId) return;
     try {
       const raw = localStorage.getItem(storageKey);
       if (raw) {
@@ -41,7 +48,7 @@ const DealDetail = () => {
       }
     } catch {}
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id]);
+  }, [dealId]);
 
   const persist = (next: { vote?: "up" | "down" | null; tempBoost?: number; comments?: Comment[] }) => {
     const merged = {
@@ -119,7 +126,7 @@ const DealDetail = () => {
       <SEO
         title={`${deal.titulo} - R$ ${deal.preco} | CashLua`}
         description={`${deal.titulo} por R$ ${deal.preco} na ${deal.loja || "loja"}. Confira essa oferta quente no CashLua.`}
-        path={`/oferta/${deal.id}`}
+        path={`/oferta/${deal.slug}`}
         image={deal.imagem || undefined}
         type="product"
         jsonLd={{

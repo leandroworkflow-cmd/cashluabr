@@ -78,6 +78,16 @@ const CATEGORY_KEYWORDS: { category: Exclude<Category, "Todos">; keywords: strin
   },
 ];
 
+function generateSlug(titulo: string, id: string): string {
+  const normalized = titulo
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+  return `${normalized}-${id}`.slice(0, 120);
+}
+
 function inferCategory(titulo: string): Exclude<Category, "Todos"> {
   const t = titulo.toLowerCase();
   for (const { category, keywords } of CATEGORY_KEYWORDS) {
@@ -102,8 +112,10 @@ export async function fetchDealsFromSheet(): Promise<Deal[]> {
     const deals: Deal[] = rows.map((row: any, index: number) => {
       const cells = row.c;
       const titulo = cells[1]?.v || "Sem título";
+      const id = cells[0]?.v?.toString() || `deal-${index}`;
       return {
-        id: cells[0]?.v?.toString() || `deal-${index}`,
+        id,
+        slug: generateSlug(titulo, id),
         titulo,
         preco: cells[2]?.v?.toString() || "0",
         link: cells[3]?.v || "#",
