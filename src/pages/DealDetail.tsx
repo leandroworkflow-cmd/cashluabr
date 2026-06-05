@@ -126,7 +126,7 @@ const DealDetail = () => {
       <SEO
         title={`${deal.titulo} - R$ ${deal.preco} | CashLua`}
         description={`${deal.titulo} por R$ ${deal.preco} na ${deal.loja || "loja"}. Confira essa oferta quente no CashLua.`}
-        path={`/oferta/${deal.id}`}
+        path={`/oferta/${deal.slug}`}
         image={deal.imagem || undefined}
         type="product"
         jsonLd={{
