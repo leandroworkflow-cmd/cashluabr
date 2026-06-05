@@ -22,6 +22,73 @@ const DealDetail = () => {
   const { data: deals, isLoading } = useDeals();
   const deal = deals?.find((d) => d.id === id);
 
+  const storageKey = `deal-engagement-${id}`;
+  const [vote, setVote] = useState<"up" | "down" | null>(null);
+  const [tempBoost, setTempBoost] = useState(0);
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [authorName, setAuthorName] = useState("");
+  const [commentText, setCommentText] = useState("");
+
+  useEffect(() => {
+    if (!id) return;
+    try {
+      const raw = localStorage.getItem(storageKey);
+      if (raw) {
+        const data = JSON.parse(raw);
+        setVote(data.vote ?? null);
+        setTempBoost(data.tempBoost ?? 0);
+        setComments(data.comments ?? []);
+      }
+    } catch {}
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
+
+  const persist = (next: { vote?: "up" | "down" | null; tempBoost?: number; comments?: Comment[] }) => {
+    const merged = {
+      vote: next.vote !== undefined ? next.vote : vote,
+      tempBoost: next.tempBoost !== undefined ? next.tempBoost : tempBoost,
+      comments: next.comments !== undefined ? next.comments : comments,
+    };
+    localStorage.setItem(storageKey, JSON.stringify(merged));
+  };
+
+  const handleVote = (type: "up" | "down") => {
+    let newVote: "up" | "down" | null = type;
+    let delta = type === "up" ? 10 : -10;
+    if (vote === type) {
+      newVote = null;
+      delta = type === "up" ? -10 : 10;
+    } else if (vote && vote !== type) {
+      delta = type === "up" ? 20 : -20;
+    }
+    const newBoost = tempBoost + delta;
+    setVote(newVote);
+    setTempBoost(newBoost);
+    persist({ vote: newVote, tempBoost: newBoost });
+  };
+
+  const handleAddComment = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!commentText.trim() || !authorName.trim()) {
+      toast.error("Preencha seu nome e comentário");
+      return;
+    }
+    const newComment: Comment = {
+      id: crypto.randomUUID(),
+      author: authorName.trim(),
+      text: commentText.trim(),
+      date: new Date().toLocaleString("pt-BR"),
+    };
+    const next = [newComment, ...comments];
+    setComments(next);
+    setCommentText("");
+    persist({ comments: next });
+    toast.success("Comentário publicado!");
+  };
+
+  const displayTemp = (deal?.temperatura || 0) + tempBoost;
+  const totalComments = (deal?.comentarios || 0) + comments.length;
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
