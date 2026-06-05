@@ -112,8 +112,10 @@ export async function fetchDealsFromSheet(): Promise<Deal[]> {
     const deals: Deal[] = rows.map((row: any, index: number) => {
       const cells = row.c;
       const titulo = cells[1]?.v || "Sem título";
+      const id = cells[0]?.v?.toString() || `deal-${index}`;
       return {
-        id: cells[0]?.v?.toString() || `deal-${index}`,
+        id,
+        slug: generateSlug(titulo, id),
         titulo,
         preco: cells[2]?.v?.toString() || "0",
         link: cells[3]?.v || "#",
