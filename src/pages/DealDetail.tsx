@@ -28,7 +28,8 @@ const DealDetail = () => {
       return lastSegment ? deals?.find((d) => d.id === lastSegment) : undefined;
     })();
 
-  const storageKey = `deal-engagement-${id}`;
+  const dealId = deal?.id || slug?.split("-").pop() || slug || "unknown";
+  const storageKey = `deal-engagement-${dealId}`;
   const [vote, setVote] = useState<"up" | "down" | null>(null);
   const [tempBoost, setTempBoost] = useState(0);
   const [comments, setComments] = useState<Comment[]>([]);
