@@ -58,7 +58,7 @@ export function DealCard({ deal }: DealCardProps) {
               <span className="text-xs text-muted-foreground">{deal.data}</span>
             </div>
 
-            <Link to={`/oferta/${deal.id}`}>
+            <Link to={`/oferta/${deal.slug}`}>
               <h2 className="font-heading font-semibold text-card-foreground leading-snug line-clamp-2 hover:text-primary transition-colors cursor-pointer">
                 {deal.titulo}
               </h2>
