@@ -5,7 +5,7 @@ import { SEO } from "@/components/SEO";
 import { useDeals } from "@/hooks/useDeals";
 import { Flame, ExternalLink, ArrowLeft, MessageCircle, ThumbsUp, ThumbsDown, Share2, Tag, Calendar, Store } from "lucide-react";
 import { shortenUrl } from "@/lib/shorten";
-import { useState, useMemo, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "sonner";
 
 interface Comment {
