@@ -3,9 +3,17 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { SEO } from "@/components/SEO";
 import { useDeals } from "@/hooks/useDeals";
-import { Flame, ExternalLink, ArrowLeft, MessageCircle, ThumbsUp, ThumbsDown, Share2 } from "lucide-react";
+import { Flame, ExternalLink, ArrowLeft, MessageCircle, ThumbsUp, ThumbsDown, Share2, Tag, Calendar, Store } from "lucide-react";
 import { shortenUrl } from "@/lib/shorten";
-import { useState } from "react";
+import { useState, useMemo, useEffect } from "react";
+import { toast } from "sonner";
+
+interface Comment {
+  id: string;
+  author: string;
+  text: string;
+  date: string;
+}
 
 
 const DealDetail = () => {
