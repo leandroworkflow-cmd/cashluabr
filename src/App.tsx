@@ -10,6 +10,7 @@ import About from "./pages/About";
 import Contact from "./pages/Contact";
 import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
+import OfertasDoDia from "./pages/OfertasDoDia";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -23,6 +24,7 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/oferta/:slug" element={<DealDetail />} />
+          <Route path="/ofertas-do-dia" element={<OfertasDoDia />} />
           <Route path="/perfil" element={<Profile />} />
           <Route path="/sobre" element={<About />} />
           <Route path="/contato" element={<Contact />} />

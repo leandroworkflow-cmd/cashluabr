@@ -62,13 +62,21 @@ const Index = () => {
           {/* AdSense - Topo */}
           <AdSlot slot={import.meta.env.VITE_ADSENSE_SLOT_TOP} />
 
-          <div>
-            <h1 className="text-2xl sm:text-3xl font-heading font-extrabold text-foreground">
-              🔥 Melhores Ofertas de Hoje
-            </h1>
-            <p className="text-sm text-muted-foreground mt-1">
-              As promoções mais quentes selecionadas pela comunidade
-            </p>
+          <div className="flex items-end justify-between gap-3 flex-wrap">
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-heading font-extrabold text-foreground">
+                🔥 Melhores Ofertas de Hoje
+              </h1>
+              <p className="text-sm text-muted-foreground mt-1">
+                As promoções mais quentes selecionadas pela comunidade
+              </p>
+            </div>
+            <a
+              href="/ofertas-do-dia"
+              className="rounded-lg bg-hot px-4 py-2 font-heading text-sm font-bold text-white shadow-sm hover:brightness-110 transition-all whitespace-nowrap"
+            >
+              ⚡ Ofertas do Dia ML
+            </a>
           </div>
 
           <FilterBar
