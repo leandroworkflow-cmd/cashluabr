@@ -1,12 +1,32 @@
 import { useQuery } from "@tanstack/react-query";
-import { ExternalLink, Loader2, Tag, Flame } from "lucide-react";
+import {
+  ExternalLink,
+  Loader2,
+  Tag,
+  Flame,
+  ChevronLeft,
+  ChevronRight,
+  ArrowDownAZ,
+  ArrowUpAZ,
+  Clock,
+  Flame as FireIcon,
+  Layers,
+} from "lucide-react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { CookieBanner } from "@/components/CookieBanner";
 import { AdSlot } from "@/components/AdSlot";
 import { SEO } from "@/components/SEO";
 import { supabase } from "@/integrations/supabase/client";
-import { useState } from "react";
+import { useState, useMemo, useCallback } from "react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
 
 interface MLDeal {
   id: string;
@@ -24,8 +44,27 @@ interface ScrapeResponse {
   fetchedAt: string;
 }
 
+function parsePrice(value: string): number {
+  const cleaned = value
+    .replace(/[^\d,\.]/g, "")
+    .replace(/\./g, "")
+    .replace(",", ".");
+  return parseFloat(cleaned) || 0;
+}
+
+function parseDiscount(value: string | null): number {
+  if (!value) return 0;
+  const num = parseInt(value.replace(/\D/g, ""), 10);
+  return isNaN(num) ? 0 : num;
+}
+
+type SortOption = "recentes" | "baratos" | "quentes";
+
 const OfertasDoDia = () => {
   const [search, setSearch] = useState("");
+  const [sortBy, setSortBy] = useState<SortOption>("recentes");
+  const [page, setPage] = useState(1);
+  const [perPage, setPerPage] = useState(24);
 
   const { data, isLoading, error, refetch, isFetching } = useQuery<ScrapeResponse>({
     queryKey: ["ml-ofertas-dia"],
@@ -38,9 +77,55 @@ const OfertasDoDia = () => {
     refetchOnWindowFocus: false,
   });
 
-  const ofertas = (data?.ofertas || []).filter((o) =>
-    search.trim() ? o.titulo.toLowerCase().includes(search.toLowerCase()) : true
+  const allOfertas = data?.ofertas || [];
+
+  const filtered = useMemo(() => {
+    const term = search.trim().toLowerCase();
+    if (!term) return allOfertas;
+    return allOfertas.filter((o) => o.titulo.toLowerCase().includes(term));
+  }, [allOfertas, search]);
+
+  const sorted = useMemo(() => {
+    const copy = [...filtered];
+    switch (sortBy) {
+      case "baratos":
+        copy.sort((a, b) => parsePrice(a.preco) - parsePrice(b.preco));
+        break;
+      case "quentes":
+        copy.sort(
+          (a, b) => parseDiscount(b.desconto) - parseDiscount(a.desconto)
+        );
+        break;
+      case "recentes":
+      default:
+        break;
+    }
+    return copy;
+  }, [filtered, sortBy]);
+
+  const totalPages = Math.max(1, Math.ceil(sorted.length / perPage));
+  const safePage = Math.min(page, totalPages);
+  const startIndex = (safePage - 1) * perPage;
+  const paginated = sorted.slice(startIndex, startIndex + perPage);
+
+  const goToPage = useCallback(
+    (p: number) => {
+      const next = Math.max(1, Math.min(p, totalPages));
+      setPage(next);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    },
+    [totalPages]
   );
+
+  const handleSortChange = (val: string) => {
+    setSortBy(val as SortOption);
+    setPage(1);
+  };
+
+  const handlePerPageChange = (val: string) => {
+    setPerPage(Number(val));
+    setPage(1);
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -80,6 +165,60 @@ const OfertasDoDia = () => {
 
           <AdSlot slot={import.meta.env.VITE_ADSENSE_SLOT_TOP} />
 
+          {!isLoading && !error && filtered.length > 0 && (
+            <div className="flex flex-wrap items-center gap-3">
+              <div className="flex items-center gap-2">
+                <Layers className="h-4 w-4 text-muted-foreground" />
+                <span className="text-sm text-muted-foreground">Ordenar:</span>
+                <Select value={sortBy} onValueChange={handleSortChange}>
+                  <SelectTrigger className="w-[170px] h-9 text-sm">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="recentes">
+                      <span className="flex items-center gap-2">
+                        <Clock className="h-3.5 w-3.5" />
+                        Mais recentes
+                      </span>
+                    </SelectItem>
+                    <SelectItem value="baratos">
+                      <span className="flex items-center gap-2">
+                        <ArrowDownAZ className="h-3.5 w-3.5" />
+                        Mais baratos
+                      </span>
+                    </SelectItem>
+                    <SelectItem value="quentes">
+                      <span className="flex items-center gap-2">
+                        <FireIcon className="h-3.5 w-3.5" />
+                        Mais quentes
+                      </span>
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-muted-foreground">Exibir:</span>
+                <Select value={String(perPage)} onValueChange={handlePerPageChange}>
+                  <SelectTrigger className="w-[80px] h-9 text-sm">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="12">12</SelectItem>
+                    <SelectItem value="24">24</SelectItem>
+                    <SelectItem value="48">48</SelectItem>
+                  </SelectContent>
+                </Select>
+                <span className="text-sm text-muted-foreground">por página</span>
+              </div>
+
+              <span className="text-sm text-muted-foreground ml-auto">
+                {filtered.length} oferta{filtered.length !== 1 ? "s" : ""} encontrada
+                {filtered.length !== 1 ? "s" : ""}
+              </span>
+            </div>
+          )}
+
           {isLoading && (
             <div className="flex flex-col items-center justify-center py-20 gap-3">
               <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -101,14 +240,14 @@ const OfertasDoDia = () => {
             </div>
           )}
 
-          {!isLoading && !error && ofertas.length === 0 && (
+          {!isLoading && !error && paginated.length === 0 && (
             <div className="text-center py-20 text-muted-foreground">
               <p>Nenhuma oferta encontrada no momento.</p>
             </div>
           )}
 
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
-            {ofertas.map((o, idx) => (
+            {paginated.map((o, idx) => (
               <article
                 key={o.id}
                 className="group bg-card rounded-lg border border-border hover:shadow-lg transition-all overflow-hidden flex flex-col"
@@ -163,6 +302,47 @@ const OfertasDoDia = () => {
               </article>
             ))}
           </div>
+
+          {!isLoading && !error && totalPages > 1 && (
+            <div className="flex flex-col items-center gap-3 py-4">
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => goToPage(safePage - 1)}
+                  disabled={safePage <= 1}
+                  aria-label="Página anterior"
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </Button>
+
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+                  <Button
+                    key={p}
+                    variant={p === safePage ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => goToPage(p)}
+                    className="min-w-[36px]"
+                  >
+                    {p}
+                  </Button>
+                ))}
+
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => goToPage(safePage + 1)}
+                  disabled={safePage >= totalPages}
+                  aria-label="Próxima página"
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Página {safePage} de {totalPages} ({sorted.length} ofertas)
+              </p>
+            </div>
+          )}
 
           <AdSlot slot={import.meta.env.VITE_ADSENSE_SLOT_BOTTOM} layout="rectangle" />
         </div>
