@@ -286,15 +286,34 @@ const OfertasDoDia = () => {
                       R$ {o.preco}
                     </span>
                   </div>
-                  <a
-                    href={o.link}
-                    target="_blank"
-                    rel="noopener noreferrer sponsored"
-                    className="inline-flex items-center justify-center gap-1.5 bg-primary text-primary-foreground font-heading font-bold text-xs px-3 py-2 rounded-lg hover:brightness-110 transition-all"
-                  >
-                    Ver no Mercado Livre
-                    <ExternalLink className="h-3 w-3" />
-                  </a>
+                  <div className="flex flex-col gap-1.5">
+                    <a
+                      href={o.link}
+                      target="_blank"
+                      rel="noopener noreferrer sponsored"
+                      className="inline-flex items-center justify-center gap-1.5 bg-primary text-primary-foreground font-heading font-bold text-xs px-3 py-2 rounded-lg hover:brightness-110 transition-all"
+                    >
+                      Ver no Mercado Livre
+                      <ExternalLink className="h-3 w-3" />
+                    </a>
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        const short = await shortenUrl(o.link);
+                        const text = `🔥 Oferta no Mercado Livre: ${o.titulo} por R$ ${o.preco}! 👉 ${short}`;
+                        window.open(
+                          `https://wa.me/?text=${encodeURIComponent(text)}`,
+                          "_blank",
+                          "noopener,noreferrer"
+                        );
+                      }}
+                      className="inline-flex items-center justify-center gap-1.5 text-white font-heading font-bold text-xs px-3 py-2 rounded-lg hover:brightness-110 transition-all"
+                      style={{ backgroundColor: "#25D366" }}
+                    >
+                      <MessageCircle className="h-3 w-3" />
+                      Compartilhar
+                    </button>
+                  </div>
                 </div>
                 {(idx + 1) % 8 === 0 && (
                   <div className="col-span-full">
