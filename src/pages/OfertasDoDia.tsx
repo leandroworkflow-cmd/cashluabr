@@ -11,7 +11,9 @@ import {
   Clock,
   Flame as FireIcon,
   Layers,
+  MessageCircle,
 } from "lucide-react";
+import { shortenUrl } from "@/lib/shorten";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { CookieBanner } from "@/components/CookieBanner";
