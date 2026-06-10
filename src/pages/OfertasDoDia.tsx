@@ -18,6 +18,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { CookieBanner } from "@/components/CookieBanner";
 import { AdSlot } from "@/components/AdSlot";
+import { NewsletterForm } from "@/components/NewsletterForm";
 import { SEO } from "@/components/SEO";
 import { supabase } from "@/integrations/supabase/client";
 import { useState, useMemo, useCallback } from "react";
@@ -164,6 +165,8 @@ const OfertasDoDia = () => {
               {isFetching ? "Atualizando..." : "Atualizar"}
             </button>
           </div>
+
+          <NewsletterForm source="ofertas-do-dia" />
 
           <AdSlot slot={import.meta.env.VITE_ADSENSE_SLOT_TOP} />
 
