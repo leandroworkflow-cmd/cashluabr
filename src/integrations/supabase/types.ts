@@ -44,6 +44,9 @@ export type Database = {
           code: string
           created_at: string
           id: string
+          image: string | null
+          price: string | null
+          title: string | null
           url: string
         }
         Insert: {
@@ -51,6 +54,9 @@ export type Database = {
           code: string
           created_at?: string
           id?: string
+          image?: string | null
+          price?: string | null
+          title?: string | null
           url: string
         }
         Update: {
@@ -58,6 +64,9 @@ export type Database = {
           code?: string
           created_at?: string
           id?: string
+          image?: string | null
+          price?: string | null
+          title?: string | null
           url?: string
         }
         Relationships: []

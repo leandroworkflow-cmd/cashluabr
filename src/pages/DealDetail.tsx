@@ -209,7 +209,11 @@ const DealDetail = () => {
                 <button
                   type="button"
                   onClick={async () => {
-                    const short = await shortenUrl(deal.link);
+                    const short = await shortenUrl(deal.link, {
+                      title: deal.titulo,
+                      image: deal.imagem,
+                      price: deal.preco,
+                    });
                     const text = `🔥 Olha essa oferta: ${deal.titulo} por R$ ${deal.preco}! 👉 ${short}`;
                     window.open(
                       `https://wa.me/?text=${encodeURIComponent(text)}`,
