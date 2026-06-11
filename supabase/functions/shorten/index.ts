@@ -1,4 +1,15 @@
 import { corsHeaders } from 'npm:@supabase/supabase-js@2/cors';
+import { createClient } from 'npm:@supabase/supabase-js@2';
+
+const ALPHABET = 'abcdefghijkmnpqrstuvwxyz23456789';
+
+function generateCode(len = 6): string {
+  const bytes = new Uint8Array(len);
+  crypto.getRandomValues(bytes);
+  let out = '';
+  for (let i = 0; i < len; i++) out += ALPHABET[bytes[i] % ALPHABET.length];
+  return out;
+}
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -7,40 +18,57 @@ Deno.serve(async (req) => {
 
   try {
     const { url } = await req.json();
-    if (!url || typeof url !== 'string') {
-      return new Response(JSON.stringify({ error: 'url required' }), {
+    if (!url || typeof url !== 'string' || !/^https?:\/\//i.test(url)) {
+      return new Response(JSON.stringify({ error: 'valid url required' }), {
         status: 400,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
 
-    const token = Deno.env.get('BITLY_ACCESS_TOKEN');
-    if (!token) {
-      return new Response(JSON.stringify({ error: 'BITLY_ACCESS_TOKEN not configured', short_url: url }), {
+    const supabase = createClient(
+      Deno.env.get('SUPABASE_URL')!,
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
+    );
+
+    // Reaproveita código existente para a mesma URL
+    const { data: existing } = await supabase
+      .from('short_links')
+      .select('code')
+      .eq('url', url)
+      .limit(1)
+      .maybeSingle();
+
+    let code = existing?.code as string | undefined;
+
+    if (!code) {
+      // Tenta inserir com retry em caso de colisão
+      for (let attempt = 0; attempt < 5; attempt++) {
+        const candidate = generateCode(6);
+        const { error } = await supabase
+          .from('short_links')
+          .insert({ code: candidate, url });
+        if (!error) {
+          code = candidate;
+          break;
+        }
+        if (error.code !== '23505') {
+          console.error('insert error', error);
+          return new Response(JSON.stringify({ error: error.message, short_url: url }), {
+            status: 200,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          });
+        }
+      }
+    }
+
+    if (!code) {
+      return new Response(JSON.stringify({ short_url: url, error: 'could not generate code' }), {
         status: 200,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
 
-    const res = await fetch('https://api-ssl.bitly.com/v4/shorten', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ long_url: url, domain: 'bit.ly' }),
-    });
-
-    const data = await res.json();
-    if (!res.ok) {
-      console.error('Bitly error', res.status, data);
-      return new Response(JSON.stringify({ short_url: url, error: data }), {
-        status: 200,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
-    }
-
-    return new Response(JSON.stringify({ short_url: data.link || url }), {
+    return new Response(JSON.stringify({ code }), {
       status: 200,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
