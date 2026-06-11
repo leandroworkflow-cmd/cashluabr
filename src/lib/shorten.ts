@@ -1,23 +1,25 @@
 import { supabase } from "@/integrations/supabase/client";
 
+export interface ShortenMeta {
+  title?: string;
+  image?: string;
+  price?: string;
+}
+
 // Encurta URLs usando o encurtador próprio (tabela short_links + edge function).
-// Retorna https://<dominio-do-site>/r/<code>. Fallback: URL original.
-export async function shortenUrl(url: string): Promise<string> {
+// Retorna a URL pública da função `r`, que serve OG tags (preview com imagem
+// em Telegram/WhatsApp/Facebook) e redireciona para a URL original.
+export async function shortenUrl(url: string, meta?: ShortenMeta): Promise<string> {
   try {
     const { data, error } = await supabase.functions.invoke("shorten", {
-      body: { url },
+      body: { url, ...(meta || {}) },
     });
     if (error) return url;
     const code = data?.code as string | undefined;
     if (!code) return (data?.short_url as string) || url;
 
-    // Usa o domínio público em produção, ou o origin atual em preview/local
-    const host = window.location.hostname;
-    const origin =
-      host === "localhost" || host.endsWith(".lovable.app") && host.includes("preview")
-        ? window.location.origin
-        : "https://cashluabr.lovable.app";
-    return `${origin}/r/${code}`;
+    const supaUrl = import.meta.env.VITE_SUPABASE_URL as string;
+    return `${supaUrl}/functions/v1/r/${code}`;
   } catch {
     return url;
   }

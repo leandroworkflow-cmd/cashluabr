@@ -302,7 +302,11 @@ const OfertasDoDia = () => {
                     <button
                       type="button"
                       onClick={async () => {
-                        const short = await shortenUrl(o.link);
+                        const short = await shortenUrl(o.link, {
+                          title: o.titulo,
+                          image: o.imagem,
+                          price: o.preco,
+                        });
                         const text = `🔥 Oferta no Mercado Livre: ${o.titulo} por R$ ${o.preco}! 👉 ${short}`;
                         window.open(
                           `https://wa.me/?text=${encodeURIComponent(text)}`,
