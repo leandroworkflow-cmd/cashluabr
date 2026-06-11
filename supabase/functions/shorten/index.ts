@@ -17,7 +17,12 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const { url } = await req.json();
+    const body = await req.json();
+    const url: string | undefined = body?.url;
+    const title: string | null = body?.title ?? null;
+    const image: string | null = body?.image ?? null;
+    const price: string | null = body?.price ?? null;
+
     if (!url || typeof url !== 'string' || !/^https?:\/\//i.test(url)) {
       return new Response(JSON.stringify({ error: 'valid url required' }), {
         status: 400,
@@ -33,20 +38,28 @@ Deno.serve(async (req) => {
     // Reaproveita código existente para a mesma URL
     const { data: existing } = await supabase
       .from('short_links')
-      .select('code')
+      .select('code, title, image, price')
       .eq('url', url)
       .limit(1)
       .maybeSingle();
 
     let code = existing?.code as string | undefined;
 
-    if (!code) {
-      // Tenta inserir com retry em caso de colisão
+    if (code) {
+      // Atualiza metadados ausentes
+      const patch: Record<string, string> = {};
+      if (title && !existing?.title) patch.title = title;
+      if (image && !existing?.image) patch.image = image;
+      if (price && !existing?.price) patch.price = price;
+      if (Object.keys(patch).length > 0) {
+        await supabase.from('short_links').update(patch).eq('code', code);
+      }
+    } else {
       for (let attempt = 0; attempt < 5; attempt++) {
         const candidate = generateCode(6);
         const { error } = await supabase
           .from('short_links')
-          .insert({ code: candidate, url });
+          .insert({ code: candidate, url, title, image, price });
         if (!error) {
           code = candidate;
           break;
