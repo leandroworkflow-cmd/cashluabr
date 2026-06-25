@@ -65,7 +65,6 @@ Deno.serve(async (req) => {
 <meta name="twitter:description" content="${escapeHtml(description)}" />
 <meta name="twitter:image" content="${escapeHtml(image)}" />
 <meta http-equiv="refresh" content="0; url=${escapeHtml(target)}" />
-<link rel="canonical" href="${escapeHtml(target)}" />
 <script>window.location.replace(${JSON.stringify(target)});</script>
 </head>
 <body style="font-family:system-ui,sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0;background:#0b0b0c;color:#fff;">
