@@ -11,6 +11,7 @@ import Contact from "./pages/Contact";
 import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
 import OfertasDoDia from "./pages/OfertasDoDia";
+import OfertasAmazon from "./pages/OfertasAmazon";
 import NotFound from "./pages/NotFound";
 import Redirect from "./pages/Redirect";
 
@@ -26,6 +27,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/oferta/:slug" element={<DealDetail />} />
           <Route path="/ofertas-do-dia" element={<OfertasDoDia />} />
+          <Route path="/ofertas-amazon" element={<OfertasAmazon />} />
           <Route path="/perfil" element={<Profile />} />
           <Route path="/sobre" element={<About />} />
           <Route path="/contato" element={<Contact />} />
