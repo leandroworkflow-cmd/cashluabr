@@ -3,6 +3,7 @@ import { Header } from "@/components/Header";
 import { WelcomeBanner } from "@/components/WelcomeBanner";
 import { NetshoesBanner } from "@/components/NetshoesBanner";
 import { PartnerStores } from "@/components/PartnerStores";
+import { AmazonDealsSection } from "@/components/AmazonDealsSection";
 import { FilterBar } from "@/components/FilterBar";
 import { DealCard } from "@/components/DealCard";
 import { Footer } from "@/components/Footer";
@@ -58,6 +59,9 @@ const Index = () => {
 
           {/* Lojas parceiras */}
           <PartnerStores />
+
+          {/* Ofertas Amazon em destaque */}
+          <AmazonDealsSection limit={8} />
 
           {/* AdSense - Topo */}
           <AdSlot slot={import.meta.env.VITE_ADSENSE_SLOT_TOP} />
