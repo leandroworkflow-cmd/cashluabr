@@ -45,34 +45,43 @@ Deno.serve(async (req) => {
       ? `Por apenas R$ ${price}. Aproveite essa oferta selecionada pelo CashLua.`
       : 'Oferta selecionada pelo CashLua. Clique para ver no site da loja.';
 
+    // Detecta crawlers de preview (WhatsApp, Telegram, Facebook, Twitter, etc).
+    // Para bots: devolve APENAS as OG tags, sem redirect (senão eles seguem
+    // o meta refresh e mostram o preview da página de destino, não a nossa).
+    // Para humanos: redireciona imediatamente via HTTP 302.
+    const ua = (req.headers.get('user-agent') || '').toLowerCase();
+    const isBot = /whatsapp|telegrambot|facebookexternalhit|facebot|twitterbot|linkedinbot|slackbot|discordbot|pinterest|skypeuripreview|googlebot|bingbot|embedly|redditbot|vkshare|w3c_validator|preview|bot|crawler|spider/i.test(ua);
+
+    if (!isBot) {
+      return new Response(null, {
+        status: 302,
+        headers: {
+          Location: target,
+          'Cache-Control': 'no-store',
+        },
+      });
+    }
+
     const html = `<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>${escapeHtml(title)}</title>
 <meta name="description" content="${escapeHtml(description)}" />
 <meta property="og:type" content="product" />
 <meta property="og:title" content="${escapeHtml(title)}" />
 <meta property="og:description" content="${escapeHtml(description)}" />
 <meta property="og:image" content="${escapeHtml(image)}" />
-<meta property="og:image:width" content="1200" />
-<meta property="og:image:height" content="630" />
+<meta property="og:image:secure_url" content="${escapeHtml(image)}" />
+<meta property="og:image:alt" content="${escapeHtml(title)}" />
 <meta property="og:url" content="${escapeHtml(target)}" />
 <meta property="og:site_name" content="CashLua" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="${escapeHtml(title)}" />
 <meta name="twitter:description" content="${escapeHtml(description)}" />
 <meta name="twitter:image" content="${escapeHtml(image)}" />
-<meta http-equiv="refresh" content="0; url=${escapeHtml(target)}" />
-<script>window.location.replace(${JSON.stringify(target)});</script>
 </head>
-<body style="font-family:system-ui,sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0;background:#0b0b0c;color:#fff;">
-<div style="text-align:center;padding:24px;">
-<p style="margin:0 0 12px;font-size:18px;font-weight:700;">Redirecionando para a oferta...</p>
-<p style="margin:0;font-size:14px;opacity:.7;">Se não for redirecionado, <a style="color:#fbbf24;" href="${escapeHtml(target)}">clique aqui</a>.</p>
-</div>
-</body>
+<body>${escapeHtml(title)}</body>
 </html>`;
 
     return new Response(html, {
@@ -82,6 +91,7 @@ Deno.serve(async (req) => {
         'Cache-Control': 'public, max-age=300',
       },
     });
+
   } catch (e) {
     console.error('r function error', e);
     return new Response('Erro', { status: 500 });
