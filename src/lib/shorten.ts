@@ -6,6 +6,13 @@ export interface ShortenMeta {
   price?: string;
 }
 
+// Domínio público do site. O link compartilhado (WhatsApp, Telegram etc.)
+// precisa cair aqui, e não direto no domínio do Supabase, para que o preview
+// mostre "www.cashlua.com.br" em vez de "xxxxx.supabase.co".
+// Isso funciona porque o vercel.json faz um rewrite (proxy) de /r/:code
+// para a edge function `r` do Supabase, sem mudar a URL visível.
+const SITE_URL = "https://www.cashlua.com.br";
+
 // Encurta URLs usando o encurtador próprio (tabela short_links + edge function).
 // Retorna a URL pública da função `r`, que serve OG tags (preview com imagem
 // em Telegram/WhatsApp/Facebook) e redireciona para a URL original.
@@ -28,10 +35,7 @@ export async function shortenUrl(url: string, meta?: ShortenMeta): Promise<strin
     const code = data?.code as string | undefined;
     if (!code) return (data?.short_url as string) || url;
 
-    const supaUrl = (import.meta.env.VITE_SUPABASE_URL as string || "").replace(/\/+$/, "");
-    if (!supaUrl) return url;
-
-    return `${supaUrl}/functions/v1/r/${code}`;
+    return `${SITE_URL}/r/${code}`;
   } catch {
     return url;
   }

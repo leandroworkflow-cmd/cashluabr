@@ -39,7 +39,7 @@ Deno.serve(async (req) => {
 
     const target = data.url as string;
     const title = (data.title as string | null) || 'Oferta CashLua';
-    const image = (data.image as string | null) || 'https://cashluabr.lovable.app/og-image.png';
+    const image = (data.image as string | null) || 'https://www.cashlua.com.br/og-image.png';
     const price = data.price as string | null;
     const description = price
       ? `Por apenas R$ ${price}. Aproveite essa oferta selecionada pelo CashLua.`

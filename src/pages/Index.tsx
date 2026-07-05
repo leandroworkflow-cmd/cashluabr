@@ -45,7 +45,7 @@ const Index = () => {
           "@type": "CollectionPage",
           name: "Melhores Ofertas de Hoje",
           description: "Promoções e cupons selecionados pela comunidade CashLua.",
-          url: "https://cashluabr.lovable.app/",
+          url: "https://www.cashlua.com.br/",
         }}
       />
       <Header search={search} onSearchChange={setSearch} />

@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://cashluabr.lovable.app/sitemap.xml
+Sitemap: https://www.cashlua.com.br/sitemap.xml
