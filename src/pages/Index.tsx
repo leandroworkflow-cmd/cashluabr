@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Header } from "@/components/Header";
-import { WelcomeBanner } from "@/components/WelcomeBanner";
 import { HeroBanner } from "@/components/HeroBanner";
+import { WelcomeBanner } from "@/components/WelcomeBanner";
 import { NetshoesBanner } from "@/components/NetshoesBanner";
 import { PartnerStores } from "@/components/PartnerStores";
 import { AmazonDealsSection } from "@/components/AmazonDealsSection";
