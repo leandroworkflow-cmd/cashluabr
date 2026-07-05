@@ -8,7 +8,6 @@ import { AmazonDealsSection } from "@/components/AmazonDealsSection";
 import { FilterBar } from "@/components/FilterBar";
 import { DealCard } from "@/components/DealCard";
 import { Footer } from "@/components/Footer";
-import { CookieBanner } from "@/components/CookieBanner";
 import { AdSlot } from "@/components/AdSlot";
 import { SEO } from "@/components/SEO";
 import { useDeals, filterDeals } from "@/hooks/useDeals";
@@ -142,7 +141,6 @@ const Index = () => {
       </main>
 
       <Footer />
-      <CookieBanner />
     </div>
   );
 };

@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { CookieBanner } from "@/components/CookieBanner";
 import Index from "./pages/Index";
 import DealDetail from "./pages/DealDetail";
 import Profile from "./pages/Profile";
@@ -37,6 +38,7 @@ const App = () => (
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
+      <CookieBanner />
     </TooltipProvider>
   </QueryClientProvider>
 );

@@ -16,7 +16,6 @@ import {
 import { shortenUrl } from "@/lib/shorten";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { CookieBanner } from "@/components/CookieBanner";
 import { AdSlot } from "@/components/AdSlot";
 import { NewsletterForm } from "@/components/NewsletterForm";
 import { SEO } from "@/components/SEO";
@@ -377,7 +376,6 @@ const OfertasDoDia = () => {
       </main>
 
       <Footer />
-      <CookieBanner />
     </div>
   );
 };
