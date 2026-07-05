@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Header } from "@/components/Header";
 import { WelcomeBanner } from "@/components/WelcomeBanner";
+import { HeroBanner } from "@/components/HeroBanner";
 import { NetshoesBanner } from "@/components/NetshoesBanner";
 import { PartnerStores } from "@/components/PartnerStores";
 import { AmazonDealsSection } from "@/components/AmazonDealsSection";
@@ -49,6 +50,7 @@ const Index = () => {
         }}
       />
       <Header search={search} onSearchChange={setSearch} />
+      <HeroBanner />
       <WelcomeBanner />
 
 
