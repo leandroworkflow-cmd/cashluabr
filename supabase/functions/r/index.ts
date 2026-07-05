@@ -28,7 +28,7 @@ Deno.serve(async (req) => {
 
     const { data, error } = await supabase
       .from('short_links')
-      .select('url, title, image, price')
+      .select('url, title, image, price, page_url')
       .eq('code', code)
       .maybeSingle();
 
@@ -38,12 +38,19 @@ Deno.serve(async (req) => {
     supabase.rpc('increment_short_link_click', { _code: code }).then(() => {});
 
     const target = data.url as string;
+    const pageUrl = data.page_url as string | null;
     const title = (data.title as string | null) || 'Oferta CashLua';
     const image = (data.image as string | null) || 'https://www.cashlua.com.br/og-image.png';
     const price = data.price as string | null;
     const description = price
       ? `Por apenas R$ ${price}. Aproveite essa oferta selecionada pelo CashLua.`
       : 'Oferta selecionada pelo CashLua. Clique para ver no site da loja.';
+
+    // Para onde o humano vai: a página do produto no próprio site (para ele
+    // ver os detalhes e clicar em "Ir para a loja"). Se o link antigo não
+    // tiver page_url salvo (links criados antes dessa mudança), cai no
+    // comportamento antigo e manda direto para a loja.
+    const humanDestination = pageUrl ? `https://www.cashlua.com.br${pageUrl}` : target;
 
     // Detecta crawlers de preview (WhatsApp, Telegram, Facebook, Twitter, etc).
     // Para bots: devolve APENAS as OG tags, sem redirect (senão eles seguem
@@ -56,7 +63,7 @@ Deno.serve(async (req) => {
       return new Response(null, {
         status: 302,
         headers: {
-          Location: target,
+          Location: humanDestination,
           'Cache-Control': 'no-store',
         },
       });
@@ -74,7 +81,7 @@ Deno.serve(async (req) => {
 <meta property="og:image" content="${escapeHtml(image)}" />
 <meta property="og:image:secure_url" content="${escapeHtml(image)}" />
 <meta property="og:image:alt" content="${escapeHtml(title)}" />
-<meta property="og:url" content="${escapeHtml(target)}" />
+<meta property="og:url" content="${escapeHtml(humanDestination)}" />
 <meta property="og:site_name" content="CashLua" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="${escapeHtml(title)}" />

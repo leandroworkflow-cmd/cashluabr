@@ -4,6 +4,10 @@ export interface ShortenMeta {
   title?: string;
   image?: string;
   price?: string;
+  // Caminho da página do produto no próprio site (ex: "/oferta/nome-abc123").
+  // Guardado no encurtador para que o link compartilhado abra essa página
+  // em vez de ir direto para a loja.
+  pageUrl?: string;
 }
 
 // Domínio público do site. O link compartilhado (WhatsApp, Telegram etc.)
