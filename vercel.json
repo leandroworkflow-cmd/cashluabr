@@ -1,0 +1,12 @@
+{
+  "rewrites": [
+    {
+      "source": "/r/:code",
+      "destination": "https://hnbanhzlxtvzhbqxepap.supabase.co/functions/v1/r/:code"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
