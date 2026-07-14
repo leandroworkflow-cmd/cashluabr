@@ -213,6 +213,7 @@ const DealDetail = () => {
                       title: deal.titulo,
                       image: deal.imagem,
                       price: deal.preco,
+                      pageUrl: `/oferta/${deal.slug || deal.id}`,
                     });
                     const text = `🔥 Olha essa oferta: ${deal.titulo} por R$ ${deal.preco}! 👉 ${short}`;
                     window.open(

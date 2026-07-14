@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Header } from "@/components/Header";
+import { HeroBanner } from "@/components/HeroBanner";
 import { WelcomeBanner } from "@/components/WelcomeBanner";
 import { NetshoesBanner } from "@/components/NetshoesBanner";
 import { PartnerStores } from "@/components/PartnerStores";
@@ -7,7 +8,6 @@ import { AmazonDealsSection } from "@/components/AmazonDealsSection";
 import { FilterBar } from "@/components/FilterBar";
 import { DealCard } from "@/components/DealCard";
 import { Footer } from "@/components/Footer";
-import { CookieBanner } from "@/components/CookieBanner";
 import { AdSlot } from "@/components/AdSlot";
 import { SEO } from "@/components/SEO";
 import { useDeals, filterDeals } from "@/hooks/useDeals";
@@ -45,10 +45,11 @@ const Index = () => {
           "@type": "CollectionPage",
           name: "Melhores Ofertas de Hoje",
           description: "Promoções e cupons selecionados pela comunidade CashLua.",
-          url: "https://cashluabr.lovable.app/",
+          url: "https://www.cashlua.com.br/",
         }}
       />
       <Header search={search} onSearchChange={setSearch} />
+      <HeroBanner />
       <WelcomeBanner />
 
 
@@ -140,7 +141,6 @@ const Index = () => {
       </main>
 
       <Footer />
-      <CookieBanner />
     </div>
   );
 };

@@ -67,6 +67,34 @@ const Privacy = () => {
               </section>
 
               <section className="space-y-2">
+                <h2 className="text-lg font-heading font-bold text-foreground">5.1. Publicidade e Google AdSense</h2>
+                <p>
+                  A CashLua utiliza o Google AdSense para exibir anúncios em nosso site. O Google, como fornecedor terceirizado, usa cookies (como o cookie DART) para veicular anúncios com base nas visitas anteriores do usuário a este e a outros sites. O uso do cookie DART pelo Google permite exibir anúncios com base na navegação do usuário na internet.
+                </p>
+                <p>
+                  Você pode desativar o uso do cookie DART visitando a{" "}
+                  <a
+                    href="https://policies.google.com/technologies/ads"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline text-foreground"
+                  >
+                    Política de Anúncios do Google
+                  </a>
+                  , e gerenciar suas preferências de anúncios personalizados nas{" "}
+                  <a
+                    href="https://adssettings.google.com/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline text-foreground"
+                  >
+                    Configurações de Anúncios do Google
+                  </a>
+                  . Terceiros, incluindo o Google, também podem usar cookies para veicular anúncios com base em visitas anteriores de um usuário ao nosso site ou a outros sites.
+                </p>
+              </section>
+
+              <section className="space-y-2">
                 <h2 className="text-lg font-heading font-bold text-foreground">6. Segurança</h2>
                 <p>
                   Adotamos medidas técnicas e organizacionais para proteger seus dados contra acessos não autorizados, alterações, divulgações ou destruição.

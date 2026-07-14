@@ -1,0 +1,1 @@
+ALTER TABLE public.short_links ADD COLUMN IF NOT EXISTS page_url text;

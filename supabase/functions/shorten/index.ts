@@ -22,6 +22,7 @@ Deno.serve(async (req) => {
     const title: string | null = body?.title ?? null;
     const image: string | null = body?.image ?? null;
     const price: string | null = body?.price ?? null;
+    const pageUrl: string | null = body?.pageUrl ?? null;
 
     if (!url || typeof url !== 'string' || !/^https?:\/\//i.test(url)) {
       return new Response(JSON.stringify({ error: 'valid url required' }), {
@@ -38,7 +39,7 @@ Deno.serve(async (req) => {
     // Reaproveita código existente para a mesma URL
     const { data: existing } = await supabase
       .from('short_links')
-      .select('code, title, image, price')
+      .select('code, title, image, price, page_url')
       .eq('url', url)
       .limit(1)
       .maybeSingle();
@@ -51,6 +52,7 @@ Deno.serve(async (req) => {
       if (title && !existing?.title) patch.title = title;
       if (image && !existing?.image) patch.image = image;
       if (price && !existing?.price) patch.price = price;
+      if (pageUrl && !existing?.page_url) patch.page_url = pageUrl;
       if (Object.keys(patch).length > 0) {
         await supabase.from('short_links').update(patch).eq('code', code);
       }
@@ -59,7 +61,7 @@ Deno.serve(async (req) => {
         const candidate = generateCode(6);
         const { error } = await supabase
           .from('short_links')
-          .insert({ code: candidate, url, title, image, price });
+          .insert({ code: candidate, url, title, image, price, page_url: pageUrl });
         if (!error) {
           code = candidate;
           break;
