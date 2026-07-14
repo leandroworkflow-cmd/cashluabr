@@ -21,6 +21,41 @@
     <priority>0.5</priority>
   </url>
   <url>
+    <loc>https://www.cashlua.com.br/guias</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.cashlua.com.br/guias/como-saber-se-uma-oferta-e-boa</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.cashlua.com.br/guias/melhores-epocas-para-comprar-eletronicos</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.cashlua.com.br/guias/cupom-de-desconto-vale-a-pena</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.cashlua.com.br/guias/como-comprar-com-seguranca-online</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.cashlua.com.br/guias/planejar-orcamento-para-compras</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.cashlua.com.br/guias/diferenca-cashback-cupom-oferta</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://www.cashlua.com.br/termos</loc>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>

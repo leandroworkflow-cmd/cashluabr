@@ -11,6 +11,8 @@ import About from "./pages/About";
 import Contact from "./pages/Contact";
 import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
+import Guias from "./pages/Guias";
+import GuiaDetail from "./pages/GuiaDetail";
 import OfertasDoDia from "./pages/OfertasDoDia";
 import OfertasAmazon from "./pages/OfertasAmazon";
 import NotFound from "./pages/NotFound";
@@ -34,6 +36,8 @@ const App = () => (
           <Route path="/contato" element={<Contact />} />
           <Route path="/termos" element={<Terms />} />
           <Route path="/privacidade" element={<Privacy />} />
+          <Route path="/guias" element={<Guias />} />
+          <Route path="/guias/:slug" element={<GuiaDetail />} />
           <Route path="/r/:code" element={<Redirect />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
