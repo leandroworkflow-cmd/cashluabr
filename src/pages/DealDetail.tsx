@@ -14,6 +14,8 @@ import { guiasContent } from "@/lib/guias-content";
 const CATEGORY_GUIA_SLUG: Record<string, string> = {
   Eletrônicos: "melhores-epocas-para-comprar-eletronicos",
   Games: "melhores-epocas-para-comprar-eletronicos",
+  Moda: "como-acertar-tamanho-roupas-calcados-online",
+  Casa: "vale-a-pena-comprar-eletroportateis-na-promocao",
 };
 const DEFAULT_GUIA_SLUG = "como-saber-se-uma-oferta-e-boa";
 
