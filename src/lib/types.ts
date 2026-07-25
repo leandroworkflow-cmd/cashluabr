@@ -12,7 +12,7 @@ export interface Deal {
   comentarios?: number;
 }
 
-export type FilterType = "quentes" | "recentes" | "comentadas";
+export type FilterType = "recentes" | "menor-preco" | "maior-preco";
 
 export const CATEGORIES = [
   "Todos",

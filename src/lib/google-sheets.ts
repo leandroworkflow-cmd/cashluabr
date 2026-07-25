@@ -123,8 +123,11 @@ export async function fetchDealsFromSheet(): Promise<Deal[]> {
         data: cells[5]?.v || new Date().toISOString(),
         loja: "Loja Online",
         categoria: inferCategory(titulo),
-        temperatura: Math.floor(Math.random() * 500) + 50,
-        comentarios: Math.floor(Math.random() * 30),
+        // Sem métrica real de popularidade vinda da planilha.
+        // Não inventamos números de "temperatura"/comentários aqui —
+        // isso seria conteúdo enganoso para o usuário (e para revisão do AdSense).
+        temperatura: 0,
+        comentarios: 0,
       };
     });
 

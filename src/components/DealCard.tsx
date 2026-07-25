@@ -1,4 +1,4 @@
-import { Flame, MessageCircle, ExternalLink, ThumbsUp, ThumbsDown } from "lucide-react";
+import { ExternalLink, MessageCircle } from "lucide-react";
 import { Deal } from "@/lib/types";
 import { Link } from "react-router-dom";
 import { shortenUrl } from "@/lib/shorten";
@@ -7,31 +7,18 @@ interface DealCardProps {
   deal: Deal;
 }
 
-export function DealCard({ deal }: DealCardProps) {
-  const tempColor =
-    (deal.temperatura || 0) > 300
-      ? "text-hot"
-      : (deal.temperatura || 0) > 100
-      ? "text-primary"
-      : "text-muted-foreground";
+// Considera "nova" uma oferta postada nas últimas 24h — critério real,
+// calculado a partir da data informada na planilha (nada de número fabricado).
+function isRecent(data: string): boolean {
+  const posted = new Date(data).getTime();
+  if (Number.isNaN(posted)) return false;
+  return Date.now() - posted < 24 * 60 * 60 * 1000;
+}
 
+export function DealCard({ deal }: DealCardProps) {
   return (
     <article className="group bg-card rounded-lg border border-border hover:shadow-lg transition-all duration-200 animate-slide-up overflow-hidden">
       <div className="flex flex-col sm:flex-row">
-        {/* Temperature sidebar */}
-        <div className="hidden sm:flex flex-col items-center justify-center gap-1 px-3 py-4 bg-secondary/50 min-w-[60px]">
-          <button className="p-1 rounded hover:bg-primary/10 transition-colors">
-            <ThumbsUp className="h-4 w-4 text-muted-foreground hover:text-success" />
-          </button>
-          <div className={`flex items-center gap-0.5 font-heading font-bold text-sm ${tempColor}`}>
-            <Flame className="h-3.5 w-3.5 animate-flame-pulse" />
-            <span>{deal.temperatura || 0}°</span>
-          </div>
-          <button className="p-1 rounded hover:bg-destructive/10 transition-colors">
-            <ThumbsDown className="h-4 w-4 text-muted-foreground hover:text-destructive" />
-          </button>
-        </div>
-
         {/* Image */}
         <div className="sm:w-40 h-40 sm:h-auto flex-shrink-0 bg-secondary/30 flex items-center justify-center p-3 overflow-hidden">
           {deal.imagem ? (
@@ -64,11 +51,11 @@ export function DealCard({ deal }: DealCardProps) {
               </h2>
             </Link>
 
-            {/* Mobile temperature */}
-            <div className={`sm:hidden flex items-center gap-1 mt-1 text-sm font-bold ${tempColor}`}>
-              <Flame className="h-3.5 w-3.5 animate-flame-pulse" />
-              <span>{deal.temperatura || 0}°</span>
-            </div>
+            {isRecent(deal.data) && (
+              <span className="inline-block mt-1 text-xs font-bold text-hot">
+                ● Nova
+              </span>
+            )}
           </div>
 
           <div className="flex items-end justify-between mt-3 gap-3">
@@ -79,10 +66,6 @@ export function DealCard({ deal }: DealCardProps) {
             </div>
 
             <div className="flex items-center gap-3">
-              <span className="flex items-center gap-1 text-xs text-muted-foreground">
-                <MessageCircle className="h-3.5 w-3.5" />
-                {deal.comentarios || 0}
-              </span>
               <button
                 type="button"
                 onClick={async () => {

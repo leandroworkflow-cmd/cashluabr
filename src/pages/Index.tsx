@@ -19,7 +19,7 @@ const DEALS_PAGE_SIZE = 24;
 
 const Index = () => {
   const [search, setSearch] = useState("");
-  const [filter, setFilter] = useState<FilterType>("quentes");
+  const [filter, setFilter] = useState<FilterType>("recentes");
   const [category, setCategory] = useState<Category>("Todos");
   const [visibleCount, setVisibleCount] = useState(DEALS_PAGE_SIZE);
   const { data: deals, isLoading, error } = useDeals();

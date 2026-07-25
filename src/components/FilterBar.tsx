@@ -1,4 +1,4 @@
-import { Flame, Clock, MessageCircle } from "lucide-react";
+import { Clock, ArrowDownNarrowWide, ArrowUpNarrowWide } from "lucide-react";
 import { FilterType, Category, CATEGORIES } from "@/lib/types";
 
 interface FilterBarProps {
@@ -8,10 +8,13 @@ interface FilterBarProps {
   onCategoryChange: (c: Category) => void;
 }
 
+// Apenas critérios de ordenação verificáveis a partir dos dados reais
+// (data e preço). Removemos "mais quentes" / "mais comentadas": eram
+// baseados em números sorteados aleatoriamente, não em engajamento real.
 const filters: { key: FilterType; label: string; icon: React.ReactNode }[] = [
-  { key: "quentes", label: "Mais Quentes", icon: <Flame className="h-4 w-4" /> },
   { key: "recentes", label: "Mais Recentes", icon: <Clock className="h-4 w-4" /> },
-  { key: "comentadas", label: "Comentadas", icon: <MessageCircle className="h-4 w-4" /> },
+  { key: "menor-preco", label: "Menor Preço", icon: <ArrowDownNarrowWide className="h-4 w-4" /> },
+  { key: "maior-preco", label: "Maior Preço", icon: <ArrowUpNarrowWide className="h-4 w-4" /> },
 ];
 
 export function FilterBar({ filter, onFilterChange, category, onCategoryChange }: FilterBarProps) {

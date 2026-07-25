@@ -3,10 +3,19 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { SEO } from "@/components/SEO";
 import { useDeals } from "@/hooks/useDeals";
-import { Flame, ExternalLink, ArrowLeft, MessageCircle, ThumbsUp, ThumbsDown, Share2, Tag, Calendar, Store } from "lucide-react";
+import { ExternalLink, ArrowLeft, MessageCircle, ThumbsUp, ThumbsDown, Share2, Tag, Calendar, Store } from "lucide-react";
 import { shortenUrl } from "@/lib/shorten";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
+import { guiasContent } from "@/lib/guias-content";
+
+// Associa cada categoria a um guia realmente existente e relevante
+// (conteúdo próprio, escrito por nós — não gerado a partir da planilha).
+const CATEGORY_GUIA_SLUG: Record<string, string> = {
+  Eletrônicos: "melhores-epocas-para-comprar-eletronicos",
+  Games: "melhores-epocas-para-comprar-eletronicos",
+};
+const DEFAULT_GUIA_SLUG = "como-saber-se-uma-oferta-e-boa";
 
 interface Comment {
   id: string;
@@ -30,8 +39,11 @@ const DealDetail = () => {
 
   const dealId = deal?.id || slug?.split("-").pop() || slug || "unknown";
   const storageKey = `deal-engagement-${dealId}`;
+  // Curtir/descurtir e comentários refletem apenas a interação real deste
+  // visitante (guardada localmente). Não somamos nenhum número de base
+  // fabricado — antes o "grau" da oferta e a contagem de comentários
+  // partiam de valores sorteados aleatoriamente, o que é conteúdo enganoso.
   const [vote, setVote] = useState<"up" | "down" | null>(null);
-  const [tempBoost, setTempBoost] = useState(0);
   const [comments, setComments] = useState<Comment[]>([]);
   const [authorName, setAuthorName] = useState("");
   const [commentText, setCommentText] = useState("");
@@ -43,35 +55,24 @@ const DealDetail = () => {
       if (raw) {
         const data = JSON.parse(raw);
         setVote(data.vote ?? null);
-        setTempBoost(data.tempBoost ?? 0);
         setComments(data.comments ?? []);
       }
     } catch {}
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dealId]);
 
-  const persist = (next: { vote?: "up" | "down" | null; tempBoost?: number; comments?: Comment[] }) => {
+  const persist = (next: { vote?: "up" | "down" | null; comments?: Comment[] }) => {
     const merged = {
       vote: next.vote !== undefined ? next.vote : vote,
-      tempBoost: next.tempBoost !== undefined ? next.tempBoost : tempBoost,
       comments: next.comments !== undefined ? next.comments : comments,
     };
     localStorage.setItem(storageKey, JSON.stringify(merged));
   };
 
   const handleVote = (type: "up" | "down") => {
-    let newVote: "up" | "down" | null = type;
-    let delta = type === "up" ? 10 : -10;
-    if (vote === type) {
-      newVote = null;
-      delta = type === "up" ? -10 : 10;
-    } else if (vote && vote !== type) {
-      delta = type === "up" ? 20 : -20;
-    }
-    const newBoost = tempBoost + delta;
+    const newVote = vote === type ? null : type;
     setVote(newVote);
-    setTempBoost(newBoost);
-    persist({ vote: newVote, tempBoost: newBoost });
+    persist({ vote: newVote });
   };
 
   const handleAddComment = (e: React.FormEvent) => {
@@ -93,8 +94,15 @@ const DealDetail = () => {
     toast.success("Comentário publicado!");
   };
 
-  const displayTemp = (deal?.temperatura || 0) + tempBoost;
-  const totalComments = (deal?.comentarios || 0) + comments.length;
+  const totalComments = comments.length;
+
+  const relatedGuia = guiasContent.find(
+    (g) => g.slug === (CATEGORY_GUIA_SLUG[deal?.categoria || ""] || DEFAULT_GUIA_SLUG)
+  );
+
+  const relatedDeals = (deals || [])
+    .filter((d) => d.id !== deal?.id && d.categoria === deal?.categoria)
+    .slice(0, 4);
 
   if (isLoading) {
     return (
@@ -191,10 +199,6 @@ const DealDetail = () => {
                 <span className="text-3xl font-heading font-extrabold text-foreground">
                   R$ {deal.preco}
                 </span>
-                <div className="flex items-center gap-1 text-hot font-bold">
-                  <Flame className="h-5 w-5 animate-flame-pulse" />
-                  <span>{displayTemp}°</span>
-                </div>
               </div>
 
               <div className="flex flex-wrap gap-2">
@@ -250,6 +254,57 @@ const DealDetail = () => {
               </div>
             </div>
           </article>
+
+          {/* Guia relacionado - conteúdo próprio, real */}
+          {relatedGuia && (
+            <section className="mt-6 rounded-lg border border-border bg-card p-6">
+              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2">
+                Antes de comprar, vale ler
+              </p>
+              <Link
+                to={`/guias/${relatedGuia.slug}`}
+                className="font-heading font-bold text-foreground hover:text-primary transition-colors"
+              >
+                {relatedGuia.title}
+              </Link>
+              <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
+                {relatedGuia.excerpt}
+              </p>
+            </section>
+          )}
+
+          {/* Ofertas relacionadas - dados reais da mesma categoria */}
+          {relatedDeals.length > 0 && (
+            <section className="mt-6">
+              <h2 className="font-heading font-bold text-foreground mb-3">
+                Outras ofertas em {deal.categoria}
+              </h2>
+              <div className="grid gap-3 sm:grid-cols-2">
+                {relatedDeals.map((d) => (
+                  <Link
+                    key={d.id}
+                    to={`/oferta/${d.slug}`}
+                    className="flex items-center gap-3 rounded-lg border border-border bg-card p-3 hover:border-primary/50 transition-colors"
+                  >
+                    {d.imagem ? (
+                      <img
+                        src={d.imagem}
+                        alt={d.titulo}
+                        className="w-14 h-14 object-contain flex-shrink-0"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <div className="w-14 h-14 bg-muted rounded flex-shrink-0" />
+                    )}
+                    <div className="min-w-0">
+                      <p className="text-sm font-medium text-foreground line-clamp-2">{d.titulo}</p>
+                      <p className="text-sm font-heading font-bold text-primary">R$ {d.preco}</p>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </section>
+          )}
 
           {/* Comments section */}
           <section className="mt-6 bg-card rounded-lg border border-border p-6">

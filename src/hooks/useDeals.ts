@@ -4,6 +4,18 @@ import { Deal, FilterType, Category } from "@/lib/types";
 
 const MAX_DEALS_TO_PROCESS = 300;
 
+// Converte "1.299,90" ou "1299.90" em número, de forma tolerante.
+function parsePreco(preco: string | undefined): number {
+  if (!preco) return 0;
+  const cleaned = preco
+    .toString()
+    .replace(/[^\d,.-]/g, "")
+    .replace(/\.(?=\d{3}(,|$))/g, "") // remove separador de milhar
+    .replace(",", ".");
+  const value = parseFloat(cleaned);
+  return Number.isFinite(value) ? value : 0;
+}
+
 export function useDeals() {
   return useQuery({
     queryKey: ["deals"],
@@ -31,14 +43,14 @@ export function filterDeals(
   }
 
   switch (filter) {
-    case "quentes":
-      filtered = [...filtered].sort((a, b) => (b.temperatura || 0) - (a.temperatura || 0));
-      break;
     case "recentes":
       filtered = [...filtered].sort((a, b) => new Date(b.data).getTime() - new Date(a.data).getTime());
       break;
-    case "comentadas":
-      filtered = [...filtered].sort((a, b) => (b.comentarios || 0) - (a.comentarios || 0));
+    case "menor-preco":
+      filtered = [...filtered].sort((a, b) => parsePreco(a.preco) - parsePreco(b.preco));
+      break;
+    case "maior-preco":
+      filtered = [...filtered].sort((a, b) => parsePreco(b.preco) - parsePreco(a.preco));
       break;
   }
 
