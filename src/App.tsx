@@ -17,6 +17,12 @@ import OfertasDoDia from "./pages/OfertasDoDia";
 import OfertasAmazon from "./pages/OfertasAmazon";
 import NotFound from "./pages/NotFound";
 import Redirect from "./pages/Redirect";
+import Categorias from "./pages/Categorias";
+import CategoryHub from "./pages/CategoryHub";
+import BrandHub from "./pages/BrandHub";
+import StoreHub from "./pages/StoreHub";
+import IntentHubPage from "./pages/IntentHub";
+import { INTENT_HUBS } from "./lib/seo-taxonomy";
 
 const queryClient = new QueryClient();
 
@@ -38,6 +44,13 @@ const App = () => (
           <Route path="/privacidade" element={<Privacy />} />
           <Route path="/guias" element={<Guias />} />
           <Route path="/guias/:slug" element={<GuiaDetail />} />
+          <Route path="/categorias" element={<Categorias />} />
+          <Route path="/categoria/:slug" element={<CategoryHub />} />
+          <Route path="/marca/:slug" element={<BrandHub />} />
+          <Route path="/loja/:slug" element={<StoreHub />} />
+          {INTENT_HUBS.map((hub) => (
+            <Route key={hub.path} path={hub.path} element={<IntentHubPage />} />
+          ))}
           <Route path="/r/:code" element={<Redirect />} />
           <Route path="*" element={<NotFound />} />
         </Routes>

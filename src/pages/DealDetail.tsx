@@ -2,12 +2,22 @@ import { useParams, Link } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { SEO } from "@/components/SEO";
+import { Breadcrumbs, breadcrumbJsonLd } from "@/components/Breadcrumbs";
+import { PriceHistoryChart } from "@/components/PriceHistoryChart";
 import { useDeals } from "@/hooks/useDeals";
+import { useDealContent, usePriceHistory } from "@/hooks/useDealContent";
 import { ExternalLink, ArrowLeft, MessageCircle, ThumbsUp, ThumbsDown, Share2, Tag, Calendar, Store } from "lucide-react";
 import { shortenUrl } from "@/lib/shorten";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { guiasContent } from "@/lib/guias-content";
+import {
+  CATEGORY_HUBS,
+  detectBrand,
+  brandSlug,
+  detectStore,
+  parsePrecoNumber,
+} from "@/lib/seo-taxonomy";
 
 // Associa cada categoria a um guia realmente existente e relevante
 // (conteúdo próprio, escrito por nós — não gerado a partir da planilha).
@@ -98,6 +108,22 @@ const DealDetail = () => {
 
   const totalComments = comments.length;
 
+  const brand = deal ? detectBrand(deal.titulo) : null;
+  const store = deal ? detectStore(deal.link) : null;
+  const categoryHub = deal
+    ? CATEGORY_HUBS.find((h) => h.match(deal))
+    : undefined;
+
+  const { data: aiContent } = useDealContent({
+    slug: deal?.slug,
+    dealId: deal?.id,
+    titulo: deal?.titulo,
+    preco: deal?.preco,
+    categoria: categoryHub?.name || deal?.categoria,
+    loja: store?.name || deal?.loja,
+  });
+  const { data: pricePoints } = usePriceHistory(deal?.id);
+
   const relatedGuia = guiasContent.find(
     (g) => g.slug === (CATEGORY_GUIA_SLUG[deal?.categoria || ""] || DEFAULT_GUIA_SLUG)
   );
@@ -131,34 +157,70 @@ const DealDetail = () => {
     );
   }
 
+  const crumbs = [
+    ...(categoryHub
+      ? [{ name: categoryHub.name, path: `/categoria/${categoryHub.slug}` }]
+      : [{ name: "Categorias", path: "/categorias" }]),
+    { name: deal.titulo },
+  ];
+
+  const priceNumber = parsePrecoNumber(deal.preco);
+
+  const jsonLd: Record<string, unknown>[] = [
+    {
+      "@context": "https://schema.org",
+      "@type": "Product",
+      name: deal.titulo,
+      image: deal.imagem,
+      description: aiContent?.meta_description || undefined,
+      ...(brand ? { brand: { "@type": "Brand", name: brand } } : {}),
+      offers: {
+        "@type": "Offer",
+        price: priceNumber || deal.preco,
+        priceCurrency: "BRL",
+        availability: "https://schema.org/InStock",
+        url: deal.link,
+        seller: {
+          "@type": "Organization",
+          name: store?.name || deal.loja || "Loja",
+        },
+      },
+    },
+    breadcrumbJsonLd(crumbs),
+  ];
+
+  if (aiContent?.faq?.length) {
+    jsonLd.push({
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: aiContent.faq.map((f) => ({
+        "@type": "Question",
+        name: f.pergunta,
+        acceptedAnswer: { "@type": "Answer", text: f.resposta },
+      })),
+    });
+  }
+
   return (
     <div className="min-h-screen flex flex-col">
       <SEO
-        title={`${deal.titulo} - R$ ${deal.preco} | CashLua`}
-        description={`${deal.titulo} por R$ ${deal.preco} na ${deal.loja || "loja"}. Confira essa oferta quente no CashLua.`}
+        title={aiContent?.seo_title || `${deal.titulo} - R$ ${deal.preco} | CashLua`}
+        description={
+          aiContent?.meta_description ||
+          `${deal.titulo} por R$ ${deal.preco} na ${store?.name || deal.loja || "loja"}. Veja análise, histórico de preço e onde comprar no CashLua.`
+        }
         path={`/oferta/${deal.slug}`}
         image={deal.imagem || undefined}
         type="product"
-        jsonLd={{
-          "@context": "https://schema.org",
-          "@type": "Product",
-          name: deal.titulo,
-          image: deal.imagem,
-          offers: {
-            "@type": "Offer",
-            price: deal.preco,
-            priceCurrency: "BRL",
-            availability: "https://schema.org/InStock",
-            url: deal.link,
-            seller: { "@type": "Organization", name: deal.loja || "Loja" },
-          },
-        }}
+        jsonLd={jsonLd}
       />
       <Header search={search} onSearchChange={setSearch} />
 
 
       <main className="flex-1">
         <div className="container py-6 max-w-3xl">
+          <Breadcrumbs items={crumbs} />
+
           <Link
             to="/"
             className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mb-4 transition-colors"
@@ -166,32 +228,58 @@ const DealDetail = () => {
             <ArrowLeft className="h-4 w-4" /> Voltar
           </Link>
 
+
           <article className="bg-card rounded-lg border border-border overflow-hidden">
             {/* Image */}
             {deal.imagem && (
               <div className="bg-secondary/30 flex items-center justify-center p-6 max-h-80">
                 <img
                   src={deal.imagem}
-                  alt={deal.titulo}
+                  alt={`${deal.titulo} em promoção${store ? ` na ${store.name}` : ""}`}
                   className="max-h-64 object-contain"
+                  width={320}
+                  height={256}
+                  fetchPriority="high"
+                  decoding="async"
                 />
               </div>
             )}
 
             <div className="p-6 space-y-4">
               <div className="flex flex-wrap items-center gap-2 text-sm">
-                <span className="inline-flex items-center gap-1 bg-secondary text-secondary-foreground px-2.5 py-1 rounded-full font-medium">
-                  <Store className="h-3.5 w-3.5" /> {deal.loja || "Loja"}
-                </span>
-                {deal.categoria && (
-                  <span className="inline-flex items-center gap-1 bg-primary/10 text-primary px-2.5 py-1 rounded-full font-medium">
-                    <Tag className="h-3.5 w-3.5" /> {deal.categoria}
+                {store ? (
+                  <Link
+                    to={`/loja/${store.slug}`}
+                    className="inline-flex items-center gap-1 bg-secondary text-secondary-foreground px-2.5 py-1 rounded-full font-medium hover:brightness-95"
+                  >
+                    <Store className="h-3.5 w-3.5" /> {store.name}
+                  </Link>
+                ) : (
+                  <span className="inline-flex items-center gap-1 bg-secondary text-secondary-foreground px-2.5 py-1 rounded-full font-medium">
+                    <Store className="h-3.5 w-3.5" /> {deal.loja || "Loja"}
                   </span>
+                )}
+                {categoryHub && (
+                  <Link
+                    to={`/categoria/${categoryHub.slug}`}
+                    className="inline-flex items-center gap-1 bg-primary/10 text-primary px-2.5 py-1 rounded-full font-medium hover:bg-primary/20"
+                  >
+                    <Tag className="h-3.5 w-3.5" /> {categoryHub.name}
+                  </Link>
+                )}
+                {brand && (
+                  <Link
+                    to={`/marca/${brandSlug(brand)}`}
+                    className="inline-flex items-center gap-1 bg-secondary text-secondary-foreground px-2.5 py-1 rounded-full font-medium hover:brightness-95"
+                  >
+                    {brand}
+                  </Link>
                 )}
                 <span className="inline-flex items-center gap-1 text-muted-foreground">
                   <Calendar className="h-3.5 w-3.5" /> {deal.data}
                 </span>
               </div>
+
 
               <h1 className="text-xl sm:text-2xl font-heading font-bold text-foreground leading-snug">
                 {deal.titulo}
@@ -256,6 +344,57 @@ const DealDetail = () => {
               </div>
             </div>
           </article>
+
+          {/* Análise original desta oferta (conteúdo exclusivo gerado para esta página) */}
+          {aiContent?.body && (
+            <section className="mt-6 rounded-lg border border-border bg-card p-6">
+              <h2 className="font-heading font-bold text-foreground mb-3">
+                Vale a pena? Nossa análise desta oferta
+              </h2>
+              <div className="space-y-3 text-sm text-foreground/90 leading-relaxed">
+                {aiContent.body
+                  .split(/\n{1,}/)
+                  .map((p) => p.trim())
+                  .filter(Boolean)
+                  .map((p, i) => (
+                    <p key={i}>{p}</p>
+                  ))}
+              </div>
+              <p className="mt-4 text-xs text-muted-foreground">
+                Texto editorial produzido pelo CashLua com apoio de inteligência
+                artificial e baseado nas informações públicas do anúncio. Confira sempre
+                a descrição oficial na loja antes de comprar.
+              </p>
+            </section>
+          )}
+
+          {/* Histórico de preço */}
+          {pricePoints && pricePoints.length > 0 && (
+            <PriceHistoryChart points={pricePoints} currentPrice={priceNumber} />
+          )}
+
+          {/* FAQ desta oferta */}
+          {aiContent?.faq && aiContent.faq.length > 0 && (
+            <section className="mt-6 rounded-lg border border-border bg-card p-6">
+              <h2 className="font-heading font-bold text-foreground mb-4">
+                Perguntas frequentes sobre esta oferta
+              </h2>
+              <div className="space-y-4">
+                {aiContent.faq.map((f) => (
+                  <div key={f.pergunta}>
+                    <h3 className="text-sm font-heading font-bold text-foreground">
+                      {f.pergunta}
+                    </h3>
+                    <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
+                      {f.resposta}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
+
 
           {/* Guia relacionado - conteúdo próprio, real */}
           {relatedGuia && (

@@ -14,6 +14,42 @@ export type Database = {
   }
   public: {
     Tables: {
+      deal_content: {
+        Row: {
+          body: string
+          created_at: string
+          deal_id: string | null
+          faq: Json
+          id: string
+          meta_description: string
+          seo_title: string
+          slug: string
+          updated_at: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          deal_id?: string | null
+          faq?: Json
+          id?: string
+          meta_description: string
+          seo_title: string
+          slug: string
+          updated_at?: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          deal_id?: string | null
+          faq?: Json
+          id?: string
+          meta_description?: string
+          seo_title?: string
+          slug?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       newsletter_subscribers: {
         Row: {
           confirmed: boolean
@@ -35,6 +71,33 @@ export type Database = {
           email?: string
           id?: string
           source?: string | null
+        }
+        Relationships: []
+      }
+      price_history: {
+        Row: {
+          captured_at: string
+          created_at: string
+          deal_id: string
+          id: string
+          price: number
+          slug: string | null
+        }
+        Insert: {
+          captured_at?: string
+          created_at?: string
+          deal_id: string
+          id?: string
+          price: number
+          slug?: string | null
+        }
+        Update: {
+          captured_at?: string
+          created_at?: string
+          deal_id?: string
+          id?: string
+          price?: number
+          slug?: string | null
         }
         Relationships: []
       }
