@@ -235,26 +235,51 @@ const DealDetail = () => {
               <div className="bg-secondary/30 flex items-center justify-center p-6 max-h-80">
                 <img
                   src={deal.imagem}
-                  alt={deal.titulo}
+                  alt={`${deal.titulo} em promoção${store ? ` na ${store.name}` : ""}`}
                   className="max-h-64 object-contain"
+                  width={320}
+                  height={256}
+                  fetchPriority="high"
+                  decoding="async"
                 />
               </div>
             )}
 
             <div className="p-6 space-y-4">
               <div className="flex flex-wrap items-center gap-2 text-sm">
-                <span className="inline-flex items-center gap-1 bg-secondary text-secondary-foreground px-2.5 py-1 rounded-full font-medium">
-                  <Store className="h-3.5 w-3.5" /> {deal.loja || "Loja"}
-                </span>
-                {deal.categoria && (
-                  <span className="inline-flex items-center gap-1 bg-primary/10 text-primary px-2.5 py-1 rounded-full font-medium">
-                    <Tag className="h-3.5 w-3.5" /> {deal.categoria}
+                {store ? (
+                  <Link
+                    to={`/loja/${store.slug}`}
+                    className="inline-flex items-center gap-1 bg-secondary text-secondary-foreground px-2.5 py-1 rounded-full font-medium hover:brightness-95"
+                  >
+                    <Store className="h-3.5 w-3.5" /> {store.name}
+                  </Link>
+                ) : (
+                  <span className="inline-flex items-center gap-1 bg-secondary text-secondary-foreground px-2.5 py-1 rounded-full font-medium">
+                    <Store className="h-3.5 w-3.5" /> {deal.loja || "Loja"}
                   </span>
+                )}
+                {categoryHub && (
+                  <Link
+                    to={`/categoria/${categoryHub.slug}`}
+                    className="inline-flex items-center gap-1 bg-primary/10 text-primary px-2.5 py-1 rounded-full font-medium hover:bg-primary/20"
+                  >
+                    <Tag className="h-3.5 w-3.5" /> {categoryHub.name}
+                  </Link>
+                )}
+                {brand && (
+                  <Link
+                    to={`/marca/${brandSlug(brand)}`}
+                    className="inline-flex items-center gap-1 bg-secondary text-secondary-foreground px-2.5 py-1 rounded-full font-medium hover:brightness-95"
+                  >
+                    {brand}
+                  </Link>
                 )}
                 <span className="inline-flex items-center gap-1 text-muted-foreground">
                   <Calendar className="h-3.5 w-3.5" /> {deal.data}
                 </span>
               </div>
+
 
               <h1 className="text-xl sm:text-2xl font-heading font-bold text-foreground leading-snug">
                 {deal.titulo}
