@@ -157,40 +157,77 @@ const DealDetail = () => {
     );
   }
 
+  const crumbs = [
+    ...(categoryHub
+      ? [{ name: categoryHub.name, path: `/categoria/${categoryHub.slug}` }]
+      : [{ name: "Categorias", path: "/categorias" }]),
+    { name: deal.titulo },
+  ];
+
+  const priceNumber = parsePrecoNumber(deal.preco);
+
+  const jsonLd: Record<string, unknown>[] = [
+    {
+      "@context": "https://schema.org",
+      "@type": "Product",
+      name: deal.titulo,
+      image: deal.imagem,
+      description: aiContent?.meta_description || undefined,
+      ...(brand ? { brand: { "@type": "Brand", name: brand } } : {}),
+      offers: {
+        "@type": "Offer",
+        price: priceNumber || deal.preco,
+        priceCurrency: "BRL",
+        availability: "https://schema.org/InStock",
+        url: deal.link,
+        seller: {
+          "@type": "Organization",
+          name: store?.name || deal.loja || "Loja",
+        },
+      },
+    },
+    breadcrumbJsonLd(crumbs),
+  ];
+
+  if (aiContent?.faq?.length) {
+    jsonLd.push({
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: aiContent.faq.map((f) => ({
+        "@type": "Question",
+        name: f.pergunta,
+        acceptedAnswer: { "@type": "Answer", text: f.resposta },
+      })),
+    });
+  }
+
   return (
     <div className="min-h-screen flex flex-col">
       <SEO
-        title={`${deal.titulo} - R$ ${deal.preco} | CashLua`}
-        description={`${deal.titulo} por R$ ${deal.preco} na ${deal.loja || "loja"}. Confira essa oferta quente no CashLua.`}
+        title={aiContent?.seo_title || `${deal.titulo} - R$ ${deal.preco} | CashLua`}
+        description={
+          aiContent?.meta_description ||
+          `${deal.titulo} por R$ ${deal.preco} na ${store?.name || deal.loja || "loja"}. Veja análise, histórico de preço e onde comprar no CashLua.`
+        }
         path={`/oferta/${deal.slug}`}
         image={deal.imagem || undefined}
         type="product"
-        jsonLd={{
-          "@context": "https://schema.org",
-          "@type": "Product",
-          name: deal.titulo,
-          image: deal.imagem,
-          offers: {
-            "@type": "Offer",
-            price: deal.preco,
-            priceCurrency: "BRL",
-            availability: "https://schema.org/InStock",
-            url: deal.link,
-            seller: { "@type": "Organization", name: deal.loja || "Loja" },
-          },
-        }}
+        jsonLd={jsonLd}
       />
       <Header search={search} onSearchChange={setSearch} />
 
 
       <main className="flex-1">
         <div className="container py-6 max-w-3xl">
+          <Breadcrumbs items={crumbs} />
+
           <Link
             to="/"
             className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mb-4 transition-colors"
           >
             <ArrowLeft className="h-4 w-4" /> Voltar
           </Link>
+
 
           <article className="bg-card rounded-lg border border-border overflow-hidden">
             {/* Image */}
