@@ -1,7 +1,7 @@
-import { useParams, Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { HubLayout } from "@/components/HubLayout";
 import { useDeals } from "@/hooks/useDeals";
-import { CATEGORY_HUBS, getCategoryHub } from "@/lib/seo-taxonomy";
+import { getCategoryHub } from "@/lib/seo-taxonomy";
 import NotFound from "./NotFound";
 
 const CategoryHub = () => {
@@ -27,32 +27,5 @@ const CategoryHub = () => {
     />
   );
 };
-
-export const CategoryIndex = () => {
-  return (
-    <HubLayout
-      title="Categorias de Ofertas — Todas as Promoções por Tema | CashLua"
-      description="Navegue pelas promoções do CashLua por categoria: celulares, notebooks, eletrodomésticos, games, moda, beleza, esportes e ferramentas."
-      path="/categorias"
-      h1="Ofertas por categoria"
-      intro="Organizamos as promoções ativas do CashLua por tema para facilitar a busca. Cada categoria reúne as ofertas encontradas nas lojas parceiras e traz orientações sobre o que observar antes de comprar naquele tipo de produto."
-      crumbs={[{ name: "Categorias" }]}
-      deals={[]}
-      emptyMessage=""
-    >
-      {null}
-    </HubLayout>
-  );
-};
-
-export const CategoryList = () => (
-  <div className="container py-6">
-    {CATEGORY_HUBS.map((h) => (
-      <Link key={h.slug} to={`/categoria/${h.slug}`}>
-        {h.name}
-      </Link>
-    ))}
-  </div>
-);
 
 export default CategoryHub;
