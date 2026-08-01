@@ -108,6 +108,22 @@ const DealDetail = () => {
 
   const totalComments = comments.length;
 
+  const brand = deal ? detectBrand(deal.titulo) : null;
+  const store = deal ? detectStore(deal.link) : null;
+  const categoryHub = deal
+    ? CATEGORY_HUBS.find((h) => h.match(deal))
+    : undefined;
+
+  const { data: aiContent } = useDealContent({
+    slug: deal?.slug,
+    dealId: deal?.id,
+    titulo: deal?.titulo,
+    preco: deal?.preco,
+    categoria: categoryHub?.name || deal?.categoria,
+    loja: store?.name || deal?.loja,
+  });
+  const { data: pricePoints } = usePriceHistory(deal?.id);
+
   const relatedGuia = guiasContent.find(
     (g) => g.slug === (CATEGORY_GUIA_SLUG[deal?.categoria || ""] || DEFAULT_GUIA_SLUG)
   );
