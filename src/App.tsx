@@ -17,6 +17,12 @@ import OfertasDoDia from "./pages/OfertasDoDia";
 import OfertasAmazon from "./pages/OfertasAmazon";
 import NotFound from "./pages/NotFound";
 import Redirect from "./pages/Redirect";
+import Categorias from "./pages/Categorias";
+import CategoryHub from "./pages/CategoryHub";
+import BrandHub from "./pages/BrandHub";
+import StoreHub from "./pages/StoreHub";
+import IntentHubPage from "./pages/IntentHub";
+import { INTENT_HUBS } from "./lib/seo-taxonomy";
 
 const queryClient = new QueryClient();
 
