@@ -44,6 +44,13 @@ const App = () => (
           <Route path="/privacidade" element={<Privacy />} />
           <Route path="/guias" element={<Guias />} />
           <Route path="/guias/:slug" element={<GuiaDetail />} />
+          <Route path="/categorias" element={<Categorias />} />
+          <Route path="/categoria/:slug" element={<CategoryHub />} />
+          <Route path="/marca/:slug" element={<BrandHub />} />
+          <Route path="/loja/:slug" element={<StoreHub />} />
+          {INTENT_HUBS.map((hub) => (
+            <Route key={hub.path} path={hub.path} element={<IntentHubPage />} />
+          ))}
           <Route path="/r/:code" element={<Redirect />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
