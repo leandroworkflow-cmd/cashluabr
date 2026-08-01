@@ -345,6 +345,57 @@ const DealDetail = () => {
             </div>
           </article>
 
+          {/* Análise original desta oferta (conteúdo exclusivo gerado para esta página) */}
+          {aiContent?.body && (
+            <section className="mt-6 rounded-lg border border-border bg-card p-6">
+              <h2 className="font-heading font-bold text-foreground mb-3">
+                Vale a pena? Nossa análise desta oferta
+              </h2>
+              <div className="space-y-3 text-sm text-foreground/90 leading-relaxed">
+                {aiContent.body
+                  .split(/\n{1,}/)
+                  .map((p) => p.trim())
+                  .filter(Boolean)
+                  .map((p, i) => (
+                    <p key={i}>{p}</p>
+                  ))}
+              </div>
+              <p className="mt-4 text-xs text-muted-foreground">
+                Texto editorial produzido pelo CashLua com apoio de inteligência
+                artificial e baseado nas informações públicas do anúncio. Confira sempre
+                a descrição oficial na loja antes de comprar.
+              </p>
+            </section>
+          )}
+
+          {/* Histórico de preço */}
+          {pricePoints && pricePoints.length > 0 && (
+            <PriceHistoryChart points={pricePoints} currentPrice={priceNumber} />
+          )}
+
+          {/* FAQ desta oferta */}
+          {aiContent?.faq && aiContent.faq.length > 0 && (
+            <section className="mt-6 rounded-lg border border-border bg-card p-6">
+              <h2 className="font-heading font-bold text-foreground mb-4">
+                Perguntas frequentes sobre esta oferta
+              </h2>
+              <div className="space-y-4">
+                {aiContent.faq.map((f) => (
+                  <div key={f.pergunta}>
+                    <h3 className="text-sm font-heading font-bold text-foreground">
+                      {f.pergunta}
+                    </h3>
+                    <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
+                      {f.resposta}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
+
+
           {/* Guia relacionado - conteúdo próprio, real */}
           {relatedGuia && (
             <section className="mt-6 rounded-lg border border-border bg-card p-6">
