@@ -2,12 +2,22 @@ import { useParams, Link } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { SEO } from "@/components/SEO";
+import { Breadcrumbs, breadcrumbJsonLd } from "@/components/Breadcrumbs";
+import { PriceHistoryChart } from "@/components/PriceHistoryChart";
 import { useDeals } from "@/hooks/useDeals";
+import { useDealContent, usePriceHistory } from "@/hooks/useDealContent";
 import { ExternalLink, ArrowLeft, MessageCircle, ThumbsUp, ThumbsDown, Share2, Tag, Calendar, Store } from "lucide-react";
 import { shortenUrl } from "@/lib/shorten";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { guiasContent } from "@/lib/guias-content";
+import {
+  CATEGORY_HUBS,
+  detectBrand,
+  brandSlug,
+  detectStore,
+  parsePrecoNumber,
+} from "@/lib/seo-taxonomy";
 
 // Associa cada categoria a um guia realmente existente e relevante
 // (conteúdo próprio, escrito por nós — não gerado a partir da planilha).
