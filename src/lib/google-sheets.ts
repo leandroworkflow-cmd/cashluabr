@@ -108,7 +108,13 @@ export async function fetchDealsFromSheet(): Promise<Deal[]> {
     );
     const data = JSON.parse(jsonString);
 
-    const rows = data.table.rows.slice(0, MAX_IMPORTED_DEALS);
+    // Linhas novas são adicionadas no FIM da planilha: lemos as últimas
+    // MAX_IMPORTED_DEALS e invertemos para que as mais recentes venham primeiro.
+    const allRows: any[] = (data.table.rows || []).filter(
+      (r: any) => r?.c && (r.c[1]?.v || r.c[3]?.v)
+    );
+    const rows = allRows.slice(-MAX_IMPORTED_DEALS).reverse();
+    const now = Date.now();
     const deals: Deal[] = rows.map((row: any, index: number) => {
       const cells = row.c;
       const titulo = cells[1]?.v || "Sem título";
@@ -120,7 +126,9 @@ export async function fetchDealsFromSheet(): Promise<Deal[]> {
         preco: cells[2]?.v?.toString() || "0",
         link: cells[3]?.v || "#",
         imagem: cells[4]?.v || "",
-        data: cells[5]?.v || new Date().toISOString(),
+        // Data vazia não descarta a oferta: usa a ordem da planilha como
+        // proxy de recência (mais recente = mais perto do fim do arquivo).
+        data: cells[5]?.v || new Date(now - index * 60000).toISOString(),
         loja: "Loja Online",
         categoria: inferCategory(titulo),
         // Sem métrica real de popularidade vinda da planilha.
