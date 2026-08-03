@@ -96,6 +96,20 @@ function inferCategory(titulo: string): Exclude<Category, "Todos"> {
   return "Eletrônicos";
 }
 
+function parseSheetDate(value: unknown, fallback: Date): string {
+  if (!value) return fallback.toISOString();
+  if (typeof value === "string" && value.startsWith("Date(")) {
+    const inner = value.slice(5, -1);
+    const [year, month, day] = inner.split(",").map((s) => parseInt(s.trim(), 10));
+    if (Number.isFinite(year) && Number.isFinite(month) && Number.isFinite(day)) {
+      const d = new Date(year, month, day);
+      if (Number.isFinite(d.getTime())) return d.toISOString();
+    }
+  }
+  const d = new Date(value as string);
+  return Number.isFinite(d.getTime()) ? d.toISOString() : fallback.toISOString();
+}
+
 export async function fetchDealsFromSheet(): Promise<Deal[]> {
   try {
     const response = await fetch(SHEET_URL);
@@ -128,7 +142,7 @@ export async function fetchDealsFromSheet(): Promise<Deal[]> {
         imagem: cells[4]?.v || "",
         // Data vazia não descarta a oferta: usa a ordem da planilha como
         // proxy de recência (mais recente = mais perto do fim do arquivo).
-        data: cells[5]?.v || new Date(now - index * 60000).toISOString(),
+        data: parseSheetDate(cells[5]?.v, new Date(now - index * 60000)),
         loja: "Loja Online",
         categoria: inferCategory(titulo),
         // Sem métrica real de popularidade vinda da planilha.
@@ -139,6 +153,7 @@ export async function fetchDealsFromSheet(): Promise<Deal[]> {
       };
     });
 
+    console.log(`[CashLua] Ofertas carregadas: ${deals.length} (planilha: ${allRows.length} linhas)`);
     return deals;
   } catch (error) {
     console.error("Erro ao buscar dados do Google Sheets:", error);
