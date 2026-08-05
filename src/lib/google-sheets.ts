@@ -2,8 +2,9 @@ import { Deal } from "./types";
 import { Category } from "./types";
 
 const SHEET_ID = "1x_45PJoQmKoFrCXeMAtvOXMlWrFYGB2tKcA6fFoS39s";
-const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
+const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq`;
 const MAX_IMPORTED_DEALS = 300;
+const SHEET_QUERY = "select A,B,C,D,E,F where B is not null";
 
 const CATEGORY_KEYWORDS: { category: Exclude<Category, "Todos">; keywords: string[] }[] = [
   {
@@ -112,7 +113,17 @@ function parseSheetDate(value: unknown, fallback: Date): string {
 
 export async function fetchDealsFromSheet(): Promise<Deal[]> {
   try {
-    const response = await fetch(SHEET_URL);
+    const params = new URLSearchParams({
+      tqx: "out:json",
+      tq: SHEET_QUERY,
+      _: Math.floor(Date.now() / 300000).toString(),
+    });
+    const response = await fetch(`${SHEET_URL}?${params.toString()}`, {
+      cache: "no-store",
+    });
+    if (!response.ok) {
+      throw new Error(`Planilha respondeu com status ${response.status}`);
+    }
     const text = await response.text();
 
     // Google Sheets returns JSONP-like response, strip wrapper
@@ -120,11 +131,15 @@ export async function fetchDealsFromSheet(): Promise<Deal[]> {
       text.indexOf("{"),
       text.lastIndexOf("}") + 1
     );
+    if (!jsonString) throw new Error("Resposta da planilha sem dados JSON");
     const data = JSON.parse(jsonString);
+    if (data.status !== "ok" || !data.table?.rows) {
+      throw new Error(data.errors?.[0]?.detailed_message || "Resposta inválida da planilha");
+    }
 
     // Linhas novas são adicionadas no FIM da planilha: lemos as últimas
     // MAX_IMPORTED_DEALS e invertemos para que as mais recentes venham primeiro.
-    const allRows: any[] = (data.table.rows || []).filter(
+    const allRows: any[] = data.table.rows.filter(
       (r: any) => r?.c && (r.c[1]?.v || r.c[3]?.v)
     );
     const rows = allRows.slice(-MAX_IMPORTED_DEALS).reverse();
@@ -137,7 +152,7 @@ export async function fetchDealsFromSheet(): Promise<Deal[]> {
         id,
         slug: generateSlug(titulo, id),
         titulo,
-        preco: cells[2]?.v?.toString() || "0",
+        preco: cells[2]?.v?.toString().replace(/^R\$\s*/i, "").trim() || "0",
         link: cells[3]?.v || "#",
         imagem: cells[4]?.v || "",
         // Data vazia não descarta a oferta: usa a ordem da planilha como
@@ -153,10 +168,10 @@ export async function fetchDealsFromSheet(): Promise<Deal[]> {
       };
     });
 
-    console.log(`[CashLua] Ofertas carregadas: ${deals.length} (planilha: ${allRows.length} linhas)`);
+    console.info(`[CashLua] Ofertas carregadas: ${deals.length} de ${allRows.length} linhas válidas`);
     return deals;
   } catch (error) {
     console.error("Erro ao buscar dados do Google Sheets:", error);
-    return [];
+    throw error instanceof Error ? error : new Error("Não foi possível carregar as ofertas");
   }
 }

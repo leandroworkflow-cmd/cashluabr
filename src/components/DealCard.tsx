@@ -15,6 +15,12 @@ function isRecent(data: string): boolean {
   return Date.now() - posted < 24 * 60 * 60 * 1000;
 }
 
+function formatDealDate(data: string): string {
+  const value = new Date(data);
+  if (Number.isNaN(value.getTime())) return "Data não informada";
+  return new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "short" }).format(value);
+}
+
 export function DealCard({ deal }: DealCardProps) {
   return (
     <article className="group bg-card rounded-lg border border-border hover:shadow-lg transition-all duration-200 animate-slide-up overflow-hidden">
@@ -42,7 +48,9 @@ export function DealCard({ deal }: DealCardProps) {
               <span className="text-xs font-medium text-muted-foreground bg-secondary px-2 py-0.5 rounded-full">
                 {deal.loja || "Loja"}
               </span>
-              <span className="text-xs text-muted-foreground">{deal.data}</span>
+              <time className="text-xs text-muted-foreground" dateTime={deal.data}>
+                {formatDealDate(deal.data)}
+              </time>
             </div>
 
             <Link to={`/oferta/${deal.slug}`}>
@@ -60,8 +68,8 @@ export function DealCard({ deal }: DealCardProps) {
 
           <div className="flex items-end justify-between mt-3 gap-3">
             <div>
-              <span className="text-2xl font-heading font-extrabold text-foreground">
-                R$ {deal.preco}
+                <span className="text-2xl font-heading font-extrabold text-foreground">
+                  R$ {deal.preco}
               </span>
             </div>
 

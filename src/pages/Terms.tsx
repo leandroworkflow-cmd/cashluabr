@@ -20,7 +20,7 @@ const Terms = () => {
                 Termos de Uso
               </h1>
               <p className="text-muted-foreground">
-                Última atualização: {new Date().toLocaleDateString("pt-BR")}
+                Última atualização: 5 de agosto de 2026
               </p>
             </div>
 
@@ -50,6 +50,13 @@ const Terms = () => {
                 <h2 className="text-lg font-heading font-bold text-foreground">4. Links de Afiliados</h2>
                 <p>
                   Alguns links presentes em nossa plataforma são links de afiliados. Isso significa que podemos receber uma comissão caso você realize uma compra através desses links, sem nenhum custo adicional para você.
+                </p>
+              </section>
+
+              <section className="space-y-2">
+                <h2 className="text-lg font-heading font-bold text-foreground">4.1. Critérios editoriais</h2>
+                <p>
+                  A existência de uma relação de afiliado não aumenta o preço pago pelo usuário. A CashLua pode receber comissão por compras qualificadas, mas preços, estoque, frete e condições são definidos exclusivamente pela loja. Conteúdo patrocinado e publicidade são identificados quando exibidos.
                 </p>
               </section>
 

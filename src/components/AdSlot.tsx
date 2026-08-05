@@ -36,19 +36,15 @@ export function AdSlot({
         ? "min-h-[600px]"
         : "min-h-[90px] sm:min-h-[120px]";
 
-  // No client/slot configured → render dashed placeholder
+  // Não exibe espaços vazios ao público: placeholders reduzem a percepção de
+  // qualidade e não devem ocupar mais espaço do que o conteúdo editorial.
   if (!ADSENSE_CLIENT || !slot) {
-    return (
-      <div
-        className={`adsense-slot w-full flex items-center justify-center bg-secondary/30 border border-dashed border-border rounded-lg ${minH} ${className}`}
-      >
-        <span className="text-xs text-muted-foreground">Espaço publicitário</span>
-      </div>
-    );
+    return null;
   }
 
   return (
-    <div className={`adsense-slot w-full ${minH} ${className}`}>
+    <aside aria-label="Publicidade" className={`adsense-slot w-full ${minH} ${className}`}>
+      <p className="mb-1 text-center text-[10px] uppercase text-muted-foreground">Publicidade</p>
       <ins
         ref={ref}
         className="adsbygoogle"
@@ -58,6 +54,6 @@ export function AdSlot({
         data-ad-format={format}
         data-full-width-responsive="true"
       />
-    </div>
+    </aside>
   );
 }

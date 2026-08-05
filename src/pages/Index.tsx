@@ -55,6 +55,23 @@ const Index = () => {
 
       <main className="flex-1">
         <div className="container py-6 space-y-5">
+          <div className="flex items-end justify-between gap-3 flex-wrap">
+            <div className="max-w-3xl">
+              <h1 className="text-2xl sm:text-3xl font-heading font-extrabold text-foreground">
+                Melhores ofertas e cupons de hoje
+              </h1>
+              <p className="text-sm text-muted-foreground mt-2 leading-relaxed">
+                Reunimos preços publicados por lojas parceiras para facilitar sua comparação. Confira valor, frete e disponibilidade no site da loja antes de comprar.
+              </p>
+            </div>
+            <a
+              href="/ofertas-do-dia"
+              className="rounded-lg bg-hot px-4 py-2 font-heading text-sm font-bold text-hot-foreground shadow-sm hover:brightness-110 transition-all whitespace-nowrap"
+            >
+              Ofertas do Dia ML
+            </a>
+          </div>
+
           {/* Banner Afiliado - Netshoes */}
           <NetshoesBanner />
 
@@ -66,23 +83,6 @@ const Index = () => {
 
           {/* AdSense - Topo */}
           <AdSlot slot={import.meta.env.VITE_ADSENSE_SLOT_TOP} />
-
-          <div className="flex items-end justify-between gap-3 flex-wrap">
-            <div>
-              <h1 className="text-2xl sm:text-3xl font-heading font-extrabold text-foreground">
-                🔥 Melhores Ofertas de Hoje
-              </h1>
-              <p className="text-sm text-muted-foreground mt-1">
-                As promoções mais quentes selecionadas pela comunidade
-              </p>
-            </div>
-            <a
-              href="/ofertas-do-dia"
-              className="rounded-lg bg-hot px-4 py-2 font-heading text-sm font-bold text-white shadow-sm hover:brightness-110 transition-all whitespace-nowrap"
-            >
-              ⚡ Ofertas do Dia ML
-            </a>
-          </div>
 
           <FilterBar
             filter={filter}
@@ -113,8 +113,8 @@ const Index = () => {
             {visibleDeals.map((deal, index) => (
               <div key={deal.id}>
                 <DealCard deal={deal} />
-                {/* AdSense a cada 5 ofertas */}
-                {(index + 1) % 5 === 0 && index < visibleDeals.length - 1 && (
+                {/* Mantém publicidade claramente separada e em menor volume que o conteúdo. */}
+                {(index + 1) % 8 === 0 && index < visibleDeals.length - 1 && (
                   <div className="mt-3">
                     <AdSlot slot={import.meta.env.VITE_ADSENSE_SLOT_FEED} />
                   </div>

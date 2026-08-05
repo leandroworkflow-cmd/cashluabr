@@ -47,10 +47,11 @@ export function usePriceHistory(dealId?: string) {
     enabled: Boolean(dealId),
     staleTime: 60 * 60 * 1000,
     queryFn: async (): Promise<PricePoint[]> => {
+      if (!dealId) return [];
       const { data, error } = await supabase
         .from("price_history")
         .select("price, captured_at")
-        .eq("deal_id", dealId!)
+        .eq("deal_id", dealId)
         .order("captured_at", { ascending: true })
         .limit(90);
       if (error) {
