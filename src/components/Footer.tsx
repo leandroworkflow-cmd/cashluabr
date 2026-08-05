@@ -1,4 +1,4 @@
-import { Flame } from "lucide-react";
+import { Moon } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export function Footer() {
@@ -8,7 +8,7 @@ export function Footer() {
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div className="flex items-center gap-2">
             <div className="bg-primary rounded-lg p-1.5">
-              <Flame className="h-4 w-4 text-primary-foreground" />
+              <Moon className="h-4 w-4 text-primary-foreground" />
             </div>
             <span className="font-heading font-bold text-foreground">CashLua</span>
           </div>
@@ -34,6 +34,9 @@ export function Footer() {
 
         <p className="mt-6 text-xs text-muted-foreground">
           © {new Date().getFullYear()} CashLua. Todos os direitos reservados.
+        </p>
+        <p className="mt-2 max-w-3xl text-xs leading-relaxed text-muted-foreground">
+          A CashLua não vende produtos. Alguns links são de afiliados e podem gerar comissão sem custo adicional para você. Preços, estoque e condições devem ser confirmados no site da loja.
         </p>
       </div>
     </footer>

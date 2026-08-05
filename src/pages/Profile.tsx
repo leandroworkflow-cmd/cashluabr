@@ -15,6 +15,7 @@ const Profile = () => {
         description="Área do usuário CashLua."
         path="/perfil"
       />
+      <meta name="robots" content="noindex, follow" />
       <Header search={search} onSearchChange={setSearch} />
 
 

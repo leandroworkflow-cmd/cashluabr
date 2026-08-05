@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const ADSENSE_CLIENT = import.meta.env.VITE_ADSENSE_CLIENT as string | undefined;
 
@@ -17,9 +17,21 @@ export function AdSlot({
 }: AdSlotProps) {
   const ref = useRef<HTMLModElement>(null);
   const pushed = useRef(false);
+  const [hasConsent, setHasConsent] = useState(
+    () => window.localStorage.getItem("cookie_consent") === "accepted"
+  );
 
   useEffect(() => {
-    if (!ADSENSE_CLIENT || !slot || pushed.current) return;
+    const updateConsent = (event: Event) => {
+      const detail = event instanceof CustomEvent ? event.detail : null;
+      setHasConsent(detail === "accepted");
+    };
+    window.addEventListener("cookie-consent-changed", updateConsent);
+    return () => window.removeEventListener("cookie-consent-changed", updateConsent);
+  }, []);
+
+  useEffect(() => {
+    if (!ADSENSE_CLIENT || !slot || !hasConsent || pushed.current) return;
     try {
       // @ts-expect-error adsbygoogle injected by external script
       (window.adsbygoogle = window.adsbygoogle || []).push({});
@@ -27,7 +39,7 @@ export function AdSlot({
     } catch {
       // ignore
     }
-  }, [slot]);
+  }, [slot, hasConsent]);
 
   const minH =
     layout === "rectangle"
@@ -38,7 +50,7 @@ export function AdSlot({
 
   // Não exibe espaços vazios ao público: placeholders reduzem a percepção de
   // qualidade e não devem ocupar mais espaço do que o conteúdo editorial.
-  if (!ADSENSE_CLIENT || !slot) {
+  if (!ADSENSE_CLIENT || !slot || !hasConsent) {
     return null;
   }
 
