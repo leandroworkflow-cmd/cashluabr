@@ -41,7 +41,8 @@ async function fetchDealPaths(): Promise<string[]> {
     const json = JSON.parse(
       text.substring(text.indexOf("{"), text.lastIndexOf("}") + 1),
     );
-    const rows = (json.table?.rows ?? []).slice(0, MAX_DEALS);
+    const validRows = (json.table?.rows ?? []).filter((row: any) => row.c?.[1]?.v);
+    const rows = validRows.slice(-MAX_DEALS).reverse();
     return rows
       .map((row: any, index: number) => {
         const titulo = row.c?.[1]?.v;

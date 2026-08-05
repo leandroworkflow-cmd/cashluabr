@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const ADSENSE_CLIENT = import.meta.env.VITE_ADSENSE_CLIENT as string | undefined;
 
@@ -17,9 +17,21 @@ export function AdSlot({
 }: AdSlotProps) {
   const ref = useRef<HTMLModElement>(null);
   const pushed = useRef(false);
+  const [hasConsent, setHasConsent] = useState(
+    () => window.localStorage.getItem("cookie_consent") === "accepted"
+  );
 
   useEffect(() => {
-    if (!ADSENSE_CLIENT || !slot || pushed.current) return;
+    const updateConsent = (event: Event) => {
+      const detail = event instanceof CustomEvent ? event.detail : null;
+      setHasConsent(detail === "accepted");
+    };
+    window.addEventListener("cookie-consent-changed", updateConsent);
+    return () => window.removeEventListener("cookie-consent-changed", updateConsent);
+  }, []);
+
+  useEffect(() => {
+    if (!ADSENSE_CLIENT || !slot || !hasConsent || pushed.current) return;
     try {
       // @ts-expect-error adsbygoogle injected by external script
       (window.adsbygoogle = window.adsbygoogle || []).push({});
@@ -27,7 +39,7 @@ export function AdSlot({
     } catch {
       // ignore
     }
-  }, [slot]);
+  }, [slot, hasConsent]);
 
   const minH =
     layout === "rectangle"
@@ -36,19 +48,15 @@ export function AdSlot({
         ? "min-h-[600px]"
         : "min-h-[90px] sm:min-h-[120px]";
 
-  // No client/slot configured → render dashed placeholder
-  if (!ADSENSE_CLIENT || !slot) {
-    return (
-      <div
-        className={`adsense-slot w-full flex items-center justify-center bg-secondary/30 border border-dashed border-border rounded-lg ${minH} ${className}`}
-      >
-        <span className="text-xs text-muted-foreground">Espaço publicitário</span>
-      </div>
-    );
+  // Não exibe espaços vazios ao público: placeholders reduzem a percepção de
+  // qualidade e não devem ocupar mais espaço do que o conteúdo editorial.
+  if (!ADSENSE_CLIENT || !slot || !hasConsent) {
+    return null;
   }
 
   return (
-    <div className={`adsense-slot w-full ${minH} ${className}`}>
+    <aside aria-label="Publicidade" className={`adsense-slot w-full ${minH} ${className}`}>
+      <p className="mb-1 text-center text-[10px] uppercase text-muted-foreground">Publicidade</p>
       <ins
         ref={ref}
         className="adsbygoogle"
@@ -58,6 +66,6 @@ export function AdSlot({
         data-ad-format={format}
         data-full-width-responsive="true"
       />
-    </div>
+    </aside>
   );
 }

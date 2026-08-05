@@ -20,7 +20,7 @@ const Privacy = () => {
                 Política de Privacidade
               </h1>
               <p className="text-muted-foreground">
-                Última atualização: {new Date().toLocaleDateString("pt-BR")}
+                Última atualização: 5 de agosto de 2026
               </p>
             </div>
 
@@ -35,7 +35,7 @@ const Privacy = () => {
               <section className="space-y-2">
                 <h2 className="text-lg font-heading font-bold text-foreground">2. Dados que Coletamos</h2>
                 <p>
-                  Podemos coletar informações como nome, e-mail e dados de navegação quando você interage com nossa plataforma. Também utilizamos cookies para melhorar sua experiência de uso.
+                  Coletamos o e-mail quando você opta por assinar a newsletter, dados enviados voluntariamente nos canais de contato e informações técnicas de navegação geradas por cookies e tecnologias semelhantes.
                 </p>
               </section>
 
@@ -55,7 +55,7 @@ const Privacy = () => {
               <section className="space-y-2">
                 <h2 className="text-lg font-heading font-bold text-foreground">4. Compartilhamento de Dados</h2>
                 <p>
-                  Não vendemos seus dados pessoais a terceiros. Podemos compartilhar informações apenas com parceiros de confiança que nos auxiliam na operação da plataforma, sempre sob rigorosas cláusulas de confidencialidade.
+                  Não vendemos seus dados pessoais. Fornecedores de infraestrutura, medição e publicidade podem tratar dados estritamente para prestar seus serviços, de acordo com suas próprias políticas e a legislação aplicável.
                 </p>
               </section>
 
@@ -69,7 +69,7 @@ const Privacy = () => {
               <section className="space-y-2">
                 <h2 className="text-lg font-heading font-bold text-foreground">5.1. Publicidade e Google AdSense</h2>
                 <p>
-                  A CashLua utiliza o Google AdSense para exibir anúncios em nosso site. O Google, como fornecedor terceirizado, usa cookies (como o cookie DART) para veicular anúncios com base nas visitas anteriores do usuário a este e a outros sites. O uso do cookie DART pelo Google permite exibir anúncios com base na navegação do usuário na internet.
+                  A CashLua pode utilizar o Google AdSense para exibir anúncios. O Google e seus parceiros podem usar cookies ou identificadores para medir anúncios e, quando permitido, personalizá-los com base na navegação do usuário.
                 </p>
                 <p>
                   Você pode desativar o uso do cookie DART visitando a{" "}

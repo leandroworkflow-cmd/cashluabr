@@ -1,8 +1,9 @@
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { SEO } from "@/components/SEO";
+import { Helmet } from "react-helmet-async";
 
-import { User, Flame, MessageCircle, Clock } from "lucide-react";
+import { User } from "lucide-react";
 import { useState } from "react";
 
 const Profile = () => {
@@ -12,9 +13,10 @@ const Profile = () => {
     <div className="min-h-screen flex flex-col">
       <SEO
         title="Meu Perfil | CashLua"
-        description="Veja seu perfil no CashLua: ofertas compartilhadas, comentários e atividade na comunidade de promoções."
+        description="Área do usuário CashLua."
         path="/perfil"
       />
+      <Helmet><meta name="robots" content="noindex, follow" /></Helmet>
       <Header search={search} onSearchChange={setSearch} />
 
 
@@ -27,23 +29,13 @@ const Profile = () => {
               </div>
               <div>
                 <h1 className="font-heading font-bold text-xl text-foreground">Usuário</h1>
-                <p className="text-sm text-muted-foreground">Membro desde 2025</p>
+                <p className="text-sm text-muted-foreground">Você está navegando como visitante.</p>
               </div>
             </div>
 
-            <div className="grid grid-cols-3 gap-4 mt-6">
-              {[
-                { icon: Flame, label: "Ofertas", value: "12" },
-                { icon: MessageCircle, label: "Comentários", value: "48" },
-                { icon: Clock, label: "Dias ativo", value: "30" },
-              ].map(({ icon: Icon, label, value }) => (
-                <div key={label} className="text-center p-3 bg-secondary rounded-lg">
-                  <Icon className="h-5 w-5 mx-auto text-primary mb-1" />
-                  <p className="text-lg font-heading font-bold text-foreground">{value}</p>
-                  <p className="text-xs text-muted-foreground">{label}</p>
-                </div>
-              ))}
-            </div>
+            <p className="mt-6 rounded-lg bg-secondary p-4 text-sm text-muted-foreground">
+              O CashLua não exige cadastro para consultar ofertas. Seus votos e comentários ficam salvos apenas neste dispositivo.
+            </p>
           </div>
         </div>
       </main>
