@@ -44,7 +44,7 @@ const Index = () => {
           "@context": "https://schema.org",
           "@type": "CollectionPage",
           name: "Melhores Ofertas de Hoje",
-          description: "Promoções e cupons selecionados pela comunidade CashLua.",
+          description: "Promoções e cupons publicados por lojas e organizados pelo CashLua.",
           url: "https://www.cashlua.com.br/",
         }}
       />

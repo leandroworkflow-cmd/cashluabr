@@ -7,6 +7,7 @@ import { DealCard } from "@/components/DealCard";
 import { Breadcrumbs, breadcrumbJsonLd, Crumb } from "@/components/Breadcrumbs";
 import { Deal } from "@/lib/types";
 import { Loader2 } from "lucide-react";
+import { Helmet } from "react-helmet-async";
 
 const PAGE_SIZE = 24;
 
@@ -76,6 +77,9 @@ export const HubLayout = ({
   return (
     <div className="min-h-screen flex flex-col">
       <SEO title={title} description={description} path={path} jsonLd={jsonLd} />
+      {!isLoading && deals.length === 0 && (
+        <Helmet><meta name="robots" content="noindex, follow" /></Helmet>
+      )}
       <Header search={search} onSearchChange={setSearch} />
 
       <main className="flex-1">
@@ -94,7 +98,7 @@ export const HubLayout = ({
             </p>
           </header>
 
-          <AdSlot slot={import.meta.env.VITE_ADSENSE_SLOT_TOP} />
+          {deals.length > 0 && <AdSlot slot={import.meta.env.VITE_ADSENSE_SLOT_TOP} />}
 
           {isLoading && (
             <div className="flex items-center justify-center py-20">
@@ -110,7 +114,7 @@ export const HubLayout = ({
             {visibleDeals.map((deal, index) => (
               <div key={deal.id}>
                 <DealCard deal={deal} />
-                {(index + 1) % 5 === 0 && index < visibleDeals.length - 1 && (
+                {(index + 1) % 8 === 0 && index < visibleDeals.length - 1 && (
                   <div className="mt-3">
                     <AdSlot slot={import.meta.env.VITE_ADSENSE_SLOT_FEED} />
                   </div>
@@ -151,7 +155,9 @@ export const HubLayout = ({
             </section>
           )}
 
-          <AdSlot slot={import.meta.env.VITE_ADSENSE_SLOT_BOTTOM} layout="rectangle" />
+          {deals.length > 0 && (
+            <AdSlot slot={import.meta.env.VITE_ADSENSE_SLOT_BOTTOM} layout="rectangle" />
+          )}
         </div>
       </main>
 
