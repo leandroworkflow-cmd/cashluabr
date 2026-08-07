@@ -15,6 +15,7 @@ import Guias from "./pages/Guias";
 import GuiaDetail from "./pages/GuiaDetail";
 import OfertasDoDia from "./pages/OfertasDoDia";
 import OfertasAmazon from "./pages/OfertasAmazon";
+import OfertasShopee from "./pages/OfertasShopee";
 import NotFound from "./pages/NotFound";
 import Redirect from "./pages/Redirect";
 import Categorias from "./pages/Categorias";
