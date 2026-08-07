@@ -101,6 +101,54 @@ export type Database = {
         }
         Relationships: []
       }
+      shopee_deals: {
+        Row: {
+          category: string | null
+          discount: number
+          id: string
+          image: string | null
+          itemid: string
+          likes: number | null
+          link: string
+          price: number | null
+          rating: number | null
+          sale_price: number
+          shop_name: string | null
+          synced_at: string
+          title: string
+        }
+        Insert: {
+          category?: string | null
+          discount?: number
+          id?: string
+          image?: string | null
+          itemid: string
+          likes?: number | null
+          link: string
+          price?: number | null
+          rating?: number | null
+          sale_price: number
+          shop_name?: string | null
+          synced_at?: string
+          title: string
+        }
+        Update: {
+          category?: string | null
+          discount?: number
+          id?: string
+          image?: string | null
+          itemid?: string
+          likes?: number | null
+          link?: string
+          price?: number | null
+          rating?: number | null
+          sale_price?: number
+          shop_name?: string | null
+          synced_at?: string
+          title?: string
+        }
+        Relationships: []
+      }
       short_links: {
         Row: {
           clicks: number

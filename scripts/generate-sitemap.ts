@@ -92,6 +92,7 @@ async function main() {
     { path: "/", changefreq: "hourly", priority: "1.0" },
     { path: "/ofertas-do-dia", changefreq: "hourly", priority: "0.9" },
     { path: "/ofertas-amazon", changefreq: "hourly", priority: "0.9" },
+    { path: "/ofertas-shopee", changefreq: "hourly", priority: "0.9" },
     { path: "/categorias", changefreq: "weekly", priority: "0.8" },
     { path: "/guias", changefreq: "weekly", priority: "0.7" },
     { path: "/sobre", changefreq: "monthly", priority: "0.5" },
