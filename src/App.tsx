@@ -38,6 +38,8 @@ const App = () => (
           <Route path="/oferta/:slug" element={<DealDetail />} />
           <Route path="/ofertas-do-dia" element={<OfertasDoDia />} />
           <Route path="/ofertas-amazon" element={<OfertasAmazon />} />
+          <Route path="/ofertas-shopee" element={<OfertasShopee />} />
+
           <Route path="/perfil" element={<Profile />} />
           <Route path="/sobre" element={<About />} />
           <Route path="/contato" element={<Contact />} />
