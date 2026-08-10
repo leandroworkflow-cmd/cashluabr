@@ -185,6 +185,57 @@ export type Database = {
         }
         Relationships: []
       }
+      telegram_deals: {
+        Row: {
+          categoria: string | null
+          chat_id: number | null
+          created_at: string
+          id: string
+          imagem: string | null
+          link: string
+          loja: string | null
+          message_id: number
+          posted_at: string
+          preco: string | null
+          raw_text: string | null
+          slug: string
+          titulo: string
+          updated_at: string
+        }
+        Insert: {
+          categoria?: string | null
+          chat_id?: number | null
+          created_at?: string
+          id?: string
+          imagem?: string | null
+          link: string
+          loja?: string | null
+          message_id: number
+          posted_at?: string
+          preco?: string | null
+          raw_text?: string | null
+          slug: string
+          titulo: string
+          updated_at?: string
+        }
+        Update: {
+          categoria?: string | null
+          chat_id?: number | null
+          created_at?: string
+          id?: string
+          imagem?: string | null
+          link?: string
+          loja?: string | null
+          message_id?: number
+          posted_at?: string
+          preco?: string | null
+          raw_text?: string | null
+          slug?: string
+          titulo?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

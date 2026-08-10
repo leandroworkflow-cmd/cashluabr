@@ -89,7 +89,7 @@ function generateSlug(titulo: string, id: string): string {
   return `${normalized}-${id}`.slice(0, 120);
 }
 
-function inferCategory(titulo: string): Exclude<Category, "Todos"> {
+export function inferCategory(titulo: string): Exclude<Category, "Todos"> {
   const t = titulo.toLowerCase();
   for (const { category, keywords } of CATEGORY_KEYWORDS) {
     if (keywords.some((kw) => t.includes(kw))) return category;
