@@ -19,7 +19,7 @@ function parsePreco(preco: string | undefined): number {
 export function useDeals() {
   return useQuery({
     queryKey: ["deals"],
-    queryFn: fetchDealsFromSheet,
+    queryFn: fetchDealsFromTelegram,
     staleTime: 5 * 60 * 1000,
     refetchOnWindowFocus: false,
   });
