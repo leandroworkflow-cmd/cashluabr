@@ -79,7 +79,7 @@ const CATEGORY_KEYWORDS: { category: Exclude<Category, "Todos">; keywords: strin
   },
 ];
 
-function generateSlug(titulo: string, id: string): string {
+export function generateSlug(titulo: string, id: string): string {
   const normalized = titulo
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
