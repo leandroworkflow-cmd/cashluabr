@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { fetchDealsFromSheet } from "@/lib/google-sheets";
+import { fetchDealsFromTelegram } from "@/lib/telegram-deals";
 import { Deal, FilterType, Category } from "@/lib/types";
 
 const MAX_DEALS_TO_PROCESS = 300;
