@@ -1,6 +1,6 @@
 // Gera public/sitemap.xml antes de `vite dev` e `vite build` (hooks predev/prebuild).
 // Inclui páginas estáticas, guias, hubs (categoria/marca/loja/intenção) e as
-// páginas de oferta vindas da planilha do Google Sheets.
+// páginas de oferta publicadas no canal do Telegram.
 
 import { writeFileSync } from "fs";
 import { resolve } from "path";
@@ -14,8 +14,9 @@ import {
 } from "../src/lib/seo-taxonomy";
 
 const BASE_URL = "https://www.cashlua.com.br";
-const SHEET_ID = "1x_45PJoQmKoFrCXeMAtvOXMlWrFYGB2tKcA6fFoS39s";
-const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
+const SUPABASE_URL = "https://hnbanhzlxtvzhbqxepap.supabase.co";
+const SUPABASE_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhuYmFuaHpseHR2emhicXhlcGFwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkxOTQ1MTIsImV4cCI6MjA5NDc3MDUxMn0.kSoZB1NCpAvx4FoBBm6tyXQU5zoUddm7JGWNL7g6jrI";
 const MAX_DEALS = 300;
 
 interface SitemapEntry {
@@ -24,35 +25,17 @@ interface SitemapEntry {
   priority?: string;
 }
 
-function generateSlug(titulo: string, id: string): string {
-  const normalized = titulo
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/(^-|-$)/g, "");
-  return `${normalized}-${id}`.slice(0, 120);
-}
-
 async function fetchDealPaths(): Promise<string[]> {
   try {
-    const res = await fetch(SHEET_URL);
-    const text = await res.text();
-    const json = JSON.parse(
-      text.substring(text.indexOf("{"), text.lastIndexOf("}") + 1),
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/telegram_deals?select=slug&order=posted_at.desc&limit=${MAX_DEALS}`,
+      { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } },
     );
-    const validRows = (json.table?.rows ?? []).filter((row: any) => row.c?.[1]?.v);
-    const rows = validRows.slice(-MAX_DEALS).reverse();
-    return rows
-      .map((row: any, index: number) => {
-        const titulo = row.c?.[1]?.v;
-        const id = row.c?.[0]?.v?.toString() || `deal-${index}`;
-        if (!titulo) return null;
-        return `/oferta/${generateSlug(String(titulo), id)}`;
-      })
-      .filter(Boolean) as string[];
+    const rows = (await res.json()) as Array<{ slug: string }>;
+    if (!Array.isArray(rows)) return [];
+    return rows.filter((r) => r?.slug).map((r) => `/oferta/${r.slug}`);
   } catch (error) {
-    console.warn("sitemap: não foi possível ler a planilha de ofertas.", error);
+    console.warn("sitemap: não foi possível ler as ofertas do Telegram.", error);
     return [];
   }
 }
