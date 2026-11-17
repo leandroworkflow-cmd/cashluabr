@@ -41,12 +41,11 @@ export async function fetchDealsFromTelegram(): Promise<Deal[]> {
     return fetchDealsFromShopee();
   }
 
-  if (!data || data.length === 0) {
-    return fetchDealsFromShopee();
-  }
+  const shopee = await fetchDealsFromShopee();
+  if (!data || data.length === 0) return shopee;
 
-
-  return (data ?? []).map((row) => ({
+  // Telegram primeiro (mais recentes), completado com as ofertas Shopee.
+  const telegram: Deal[] = data.map((row) => ({
     id: String(row.message_id),
     slug: row.slug,
     titulo: row.titulo,
@@ -59,4 +58,5 @@ export async function fetchDealsFromTelegram(): Promise<Deal[]> {
     temperatura: 0,
     comentarios: 0,
   }));
+  return [...telegram, ...shopee].slice(0, MAX_DEALS);
 }
