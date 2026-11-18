@@ -5,6 +5,10 @@
       "destination": "https://hnbanhzlxtvzhbqxepap.supabase.co/functions/v1/r/:code"
     },
     {
+      "source": "/sitemap.xml",
+      "destination": "https://hnbanhzlxtvzhbqxepap.supabase.co/functions/v1/sitemap"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }

@@ -17,6 +17,12 @@ export function Footer() {
             <Link to="/sobre" className="hover:text-foreground transition-colors">
               Quem Somos
             </Link>
+            <Link to="/tendencias" className="hover:text-foreground transition-colors">
+              Tendências
+            </Link>
+            <Link to="/blog" className="hover:text-foreground transition-colors">
+              Blog
+            </Link>
             <Link to="/guias" className="hover:text-foreground transition-colors">
               Guias e Dicas
             </Link>

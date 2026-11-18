@@ -8,6 +8,7 @@ import { useDeals } from "@/hooks/useDeals";
 import { useDealContent, usePriceHistory } from "@/hooks/useDealContent";
 import { ExternalLink, ArrowLeft, MessageCircle, ThumbsUp, ThumbsDown, Share2, Tag, Calendar, Store } from "lucide-react";
 import { shortenUrl } from "@/lib/shorten";
+import { findSimilarDeals } from "@/lib/similarity";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { guiasContent } from "@/lib/guias-content";
@@ -128,9 +129,9 @@ const DealDetail = () => {
     (g) => g.slug === (CATEGORY_GUIA_SLUG[deal?.categoria || ""] || DEFAULT_GUIA_SLUG)
   );
 
-  const relatedDeals = (deals || [])
-    .filter((d) => d.id !== deal?.id && d.categoria === deal?.categoria)
-    .slice(0, 4);
+  // Produtos parecidos de verdade: mesma marca, mesmo tipo de produto,
+  // palavras em comum no título e preço na mesma faixa.
+  const relatedDeals = findSimilarDeals(deal ?? ({} as any), deals || [], 4);
 
   if (isLoading) {
     return (
@@ -414,12 +415,15 @@ const DealDetail = () => {
             </section>
           )}
 
-          {/* Ofertas relacionadas - dados reais da mesma categoria */}
+          {/* Ofertas relacionadas - produtos parecidos de verdade */}
           {relatedDeals.length > 0 && (
             <section className="mt-6">
-              <h2 className="font-heading font-bold text-foreground mb-3">
-                Outras ofertas em {deal.categoria}
+              <h2 className="font-heading font-bold text-foreground mb-1">
+                Produtos parecidos
               </h2>
+              <p className="text-xs text-muted-foreground mb-3">
+                Mesma marca ou mesmo tipo de produto, com preço na mesma faixa.
+              </p>
               <div className="grid gap-3 sm:grid-cols-2">
                 {relatedDeals.map((d) => (
                   <Link

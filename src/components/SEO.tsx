@@ -8,6 +8,7 @@ interface SEOProps {
   path?: string;
   image?: string;
   type?: "website" | "article" | "product";
+  noindex?: boolean;
   jsonLd?: Record<string, unknown> | Record<string, unknown>[];
 }
 
@@ -17,6 +18,7 @@ export const SEO = ({
   path = "/",
   image = `${SITE_URL}/favicon.png`,
   type = "website",
+  noindex = false,
   jsonLd,
 }: SEOProps) => {
   const url = `${SITE_URL}${path}`;
@@ -25,6 +27,7 @@ export const SEO = ({
       <title>{title}</title>
       <meta name="description" content={description} />
       <link rel="canonical" href={url} />
+      {noindex && <meta name="robots" content="noindex, follow" />}
 
       <meta property="og:title" content={title} />
       <meta property="og:description" content={description} />

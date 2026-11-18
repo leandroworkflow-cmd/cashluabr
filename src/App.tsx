@@ -23,6 +23,9 @@ import CategoryHub from "./pages/CategoryHub";
 import BrandHub from "./pages/BrandHub";
 import StoreHub from "./pages/StoreHub";
 import IntentHubPage from "./pages/IntentHub";
+import Tendencias from "./pages/Tendencias";
+import Blog from "./pages/Blog";
+import BlogPost from "./pages/BlogPost";
 import { INTENT_HUBS } from "./lib/seo-taxonomy";
 
 const queryClient = new QueryClient();
@@ -39,6 +42,9 @@ const App = () => (
           <Route path="/ofertas-do-dia" element={<OfertasDoDia />} />
           <Route path="/ofertas-amazon" element={<OfertasAmazon />} />
           <Route path="/ofertas-shopee" element={<OfertasShopee />} />
+          <Route path="/tendencias" element={<Tendencias />} />
+          <Route path="/blog" element={<Blog />} />
+          <Route path="/blog/:slug" element={<BlogPost />} />
 
           <Route path="/perfil" element={<Profile />} />
           <Route path="/sobre" element={<About />} />

@@ -36,6 +36,18 @@ export function Header({ search, onSearchChange }: HeaderProps) {
         </div>
 
         <div className="flex items-center gap-1">
+          <Link
+            to="/tendencias"
+            className="hidden md:inline-flex items-center px-2 py-1 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
+          >
+            Tendências
+          </Link>
+          <Link
+            to="/blog"
+            className="hidden md:inline-flex items-center px-2 py-1 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
+          >
+            Blog
+          </Link>
           <button
             className="sm:hidden p-2 rounded-lg hover:bg-secondary transition-colors"
             onClick={() => setMobileSearchOpen(!mobileSearchOpen)}
@@ -63,6 +75,14 @@ export function Header({ search, onSearchChange }: HeaderProps) {
       {/* Mobile search bar */}
       {mobileSearchOpen && (
         <div className="sm:hidden px-4 pb-3">
+          <div className="mb-2 flex gap-4 text-sm">
+            <Link to="/tendencias" className="text-muted-foreground hover:text-foreground">
+              Tendências
+            </Link>
+            <Link to="/blog" className="text-muted-foreground hover:text-foreground">
+              Blog
+            </Link>
+          </div>
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <input

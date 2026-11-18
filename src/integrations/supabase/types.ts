@@ -14,6 +14,51 @@ export type Database = {
   }
   public: {
     Tables: {
+      blog_posts: {
+        Row: {
+          body: string
+          created_at: string
+          deal_refs: Json
+          excerpt: string
+          id: string
+          meta_description: string
+          published_at: string
+          published_on: string
+          slug: string
+          tags: Json
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          body?: string
+          created_at?: string
+          deal_refs?: Json
+          excerpt?: string
+          id?: string
+          meta_description?: string
+          published_at?: string
+          published_on?: string
+          slug: string
+          tags?: Json
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          deal_refs?: Json
+          excerpt?: string
+          id?: string
+          meta_description?: string
+          published_at?: string
+          published_on?: string
+          slug?: string
+          tags?: Json
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       deal_content: {
         Row: {
           body: string
