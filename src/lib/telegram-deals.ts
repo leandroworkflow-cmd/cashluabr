@@ -1,10 +1,12 @@
 import { supabase } from "@/integrations/supabase/client";
 import { Deal } from "./types";
-import { inferCategory, generateSlug } from "./google-sheets";
+import { inferCategory, generateSlug, fetchDealsFromSheet } from "./google-sheets";
 
 const MAX_DEALS = 300;
 
-// Enquanto o canal do Telegram não tiver posts novos, mostramos as ofertas Shopee.
+// Ofertas Shopee (sincronizadas do datafeed de afiliado).
+// Lança erro em vez de devolver lista vazia, para que a falha apareça no log
+// e o chamador decida o que fazer (antes o erro era engolido em silêncio).
 async function fetchDealsFromShopee(): Promise<Deal[]> {
   const { data, error } = await supabase
     .from("shopee_deals")
@@ -12,9 +14,9 @@ async function fetchDealsFromShopee(): Promise<Deal[]> {
     .order("discount", { ascending: false })
     .limit(MAX_DEALS);
 
-  if (error || !data) return [];
+  if (error) throw new Error(`shopee_deals: ${error.message}`);
 
-  return data.map((row) => ({
+  return (data ?? []).map((row) => ({
     id: `shopee-${row.itemid}`,
     slug: generateSlug(row.title, `shopee-${row.itemid}`),
     titulo: row.title,
@@ -29,23 +31,16 @@ async function fetchDealsFromShopee(): Promise<Deal[]> {
   }));
 }
 
-export async function fetchDealsFromTelegram(): Promise<Deal[]> {
+async function fetchDealsFromTelegramTable(): Promise<Deal[]> {
   const { data, error } = await supabase
     .from("telegram_deals")
     .select("message_id, slug, titulo, preco, link, imagem, loja, categoria, posted_at")
     .order("posted_at", { ascending: false })
     .limit(MAX_DEALS);
 
-  if (error) {
-    console.error("Erro ao carregar ofertas do Telegram:", error.message);
-    return fetchDealsFromShopee();
-  }
+  if (error) throw new Error(`telegram_deals: ${error.message}`);
 
-  const shopee = await fetchDealsFromShopee();
-  if (!data || data.length === 0) return shopee;
-
-  // Telegram primeiro (mais recentes), completado com as ofertas Shopee.
-  const telegram: Deal[] = data.map((row) => ({
+  return (data ?? []).map((row) => ({
     id: String(row.message_id),
     slug: row.slug,
     titulo: row.titulo,
@@ -58,5 +53,32 @@ export async function fetchDealsFromTelegram(): Promise<Deal[]> {
     temperatura: 0,
     comentarios: 0,
   }));
-  return [...telegram, ...shopee].slice(0, MAX_DEALS);
+}
+
+// Ordem de prioridade: Telegram (mais recentes) + Shopee. As duas fontes são
+// buscadas em paralelo e independentes: se uma falha, a outra continua valendo.
+// Se o banco não devolver nada (tabelas vazias ou indisponíveis), usa a
+// planilha do Google como reserva para o painel nunca ficar sem ofertas.
+export async function fetchDealsFromTelegram(): Promise<Deal[]> {
+  const [telegramRes, shopeeRes] = await Promise.allSettled([
+    fetchDealsFromTelegramTable(),
+    fetchDealsFromShopee(),
+  ]);
+
+  const failures: string[] = [];
+  if (telegramRes.status === "rejected") {
+    failures.push(String(telegramRes.reason?.message ?? telegramRes.reason));
+  }
+  if (shopeeRes.status === "rejected") {
+    failures.push(String(shopeeRes.reason?.message ?? shopeeRes.reason));
+  }
+  if (failures.length) console.error("[CashLua] Falha ao carregar ofertas do banco:", failures.join(" | "));
+
+  const telegram = telegramRes.status === "fulfilled" ? telegramRes.value : [];
+  const shopee = shopeeRes.status === "fulfilled" ? shopeeRes.value : [];
+  const combined = [...telegram, ...shopee].slice(0, MAX_DEALS);
+  if (combined.length > 0) return combined;
+
+  console.warn("[CashLua] Banco sem ofertas; usando planilha como reserva.");
+  return fetchDealsFromSheet();
 }
