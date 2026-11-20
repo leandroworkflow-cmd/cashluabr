@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { fetchDealsFromTelegram } from "@/lib/telegram-deals";
+import { fetchDealsFromSheet } from "@/lib/google-sheets";
 import { Deal, FilterType, Category } from "@/lib/types";
 
 const MAX_DEALS_TO_PROCESS = 300;
@@ -16,10 +17,21 @@ function parsePreco(preco: string | undefined): number {
   return Number.isFinite(value) ? value : 0;
 }
 
+// Planilha primeiro; se falhar ou vier vazia, usa o Telegram/Shopee (Supabase).
+async function fetchDeals(): Promise<Deal[]> {
+  try {
+    const fromSheet = await fetchDealsFromSheet();
+    if (fromSheet.length > 0) return fromSheet;
+  } catch (error) {
+    console.warn("Planilha indisponível, usando Telegram/Shopee:", error);
+  }
+  return fetchDealsFromTelegram();
+}
+
 export function useDeals() {
   return useQuery({
     queryKey: ["deals"],
-    queryFn: fetchDealsFromTelegram,
+    queryFn: fetchDeals,
     staleTime: 5 * 60 * 1000,
     refetchOnWindowFocus: false,
   });

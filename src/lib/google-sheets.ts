@@ -1,7 +1,7 @@
 import { Deal } from "./types";
 import { Category } from "./types";
 
-const SHEET_ID = "1x_45PJoQmKoFrCXeMAtvOXMlWrFYGB2tKcA6fFoS39s";
+const SHEET_ID = "1YInsllX0CO5l8th1XGGyKnAL-kxXl0IEM6zU3sZ9W40";
 const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq`;
 const MAX_IMPORTED_DEALS = 300;
 const SHEET_QUERY = "select A,B,C,D,E,F where B is not null";
@@ -115,6 +115,7 @@ export async function fetchDealsFromSheet(): Promise<Deal[]> {
   try {
     const params = new URLSearchParams({
       tqx: "out:json",
+      headers: "1",
       tq: SHEET_QUERY,
       _: Math.floor(Date.now() / 300000).toString(),
     });
