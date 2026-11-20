@@ -1,61 +1,53 @@
 import { useState, useEffect } from "react";
-
-const ADSENSE_CLIENT = "ca-pub-7054499486507421";
-
-function enableAdsense() {
-  if (document.querySelector(`script[data-adsense-client="${ADSENSE_CLIENT}"]`)) return;
-  const script = document.createElement("script");
-  script.async = true;
-  script.crossOrigin = "anonymous";
-  script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`;
-  script.dataset.adsenseClient = ADSENSE_CLIENT;
-  document.head.appendChild(script);
-}
+import { Link } from "react-router-dom";
+import { CONSENT_EVENT, CONSENT_KEY, loadAdsenseScript } from "@/lib/adsense";
 
 export function CookieBanner() {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    const consent = localStorage.getItem("cookie_consent");
-    if (consent === "accepted") enableAdsense();
+    const consent = localStorage.getItem(CONSENT_KEY);
+    if (consent === "accepted") loadAdsenseScript();
     if (!consent) setVisible(true);
   }, []);
 
-  const accept = () => {
-    localStorage.setItem("cookie_consent", "accepted");
-    enableAdsense();
-    window.dispatchEvent(new CustomEvent("cookie-consent-changed", { detail: "accepted" }));
-    setVisible(false);
-  };
-
-  const decline = () => {
-    localStorage.setItem("cookie_consent", "declined");
-    window.dispatchEvent(new CustomEvent("cookie-consent-changed", { detail: "declined" }));
+  const choose = (value: "accepted" | "declined") => {
+    localStorage.setItem(CONSENT_KEY, value);
+    if (value === "accepted") loadAdsenseScript();
+    window.dispatchEvent(new CustomEvent(CONSENT_EVENT, { detail: value }));
     setVisible(false);
   };
 
   if (!visible) return null;
 
   return (
-    <div className="fixed bottom-0 inset-x-0 z-50 p-4 bg-card border-t border-border shadow-lg animate-slide-up">
-      <div className="container flex flex-col sm:flex-row items-start sm:items-center gap-3">
-        <p className="text-sm text-muted-foreground flex-1">
-          Usamos cookies necessários para o site e, com sua autorização, cookies de publicidade do Google para medir e personalizar anúncios. Você pode aceitar ou recusar sem perder acesso às ofertas. Consulte nossa{" "}
-          <a href="/privacidade" className="underline text-foreground">
+    <div
+      role="dialog"
+      aria-label="Preferências de cookies"
+      className="fixed inset-x-0 bottom-0 z-50 border-t border-border bg-card p-4 shadow-[0_-8px_24px_-12px_rgba(0,0,0,0.25)]"
+    >
+      <div className="container flex flex-col gap-3 sm:flex-row sm:items-center">
+        <p className="flex-1 text-sm leading-relaxed text-muted-foreground">
+          Usamos cookies necessários para o site e, com a sua autorização, cookies de publicidade do
+          Google para medir e personalizar anúncios. Você pode recusar sem perder acesso às ofertas.
+          Saiba mais na{" "}
+          <Link to="/privacidade" className="font-medium text-foreground underline underline-offset-2">
             Política de Privacidade
-          </a>{" "}
-          conforme a LGPD.
+          </Link>
+          .
         </p>
-        <div className="flex gap-2 flex-shrink-0">
+        <div className="flex flex-shrink-0 gap-2">
           <button
-            onClick={decline}
-            className="px-4 py-2 text-sm font-medium rounded-lg bg-secondary text-secondary-foreground hover:bg-border transition-colors"
+            type="button"
+            onClick={() => choose("declined")}
+            className="min-w-[110px] rounded-md border border-foreground px-4 py-2 text-sm font-semibold text-foreground transition-colors hover:bg-secondary"
           >
             Recusar
           </button>
           <button
-            onClick={accept}
-            className="px-4 py-2 text-sm font-medium rounded-lg bg-primary text-primary-foreground hover:brightness-110 transition-all"
+            type="button"
+            onClick={() => choose("accepted")}
+            className="min-w-[110px] rounded-md border border-foreground bg-foreground px-4 py-2 text-sm font-semibold text-background transition-opacity hover:opacity-90"
           >
             Aceitar
           </button>

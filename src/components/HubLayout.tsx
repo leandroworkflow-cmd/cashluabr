@@ -3,7 +3,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { SEO } from "@/components/SEO";
 import { AdSlot } from "@/components/AdSlot";
-import { DealCard } from "@/components/DealCard";
+import { DealGrid } from "@/components/DealGrid";
 import { Breadcrumbs, breadcrumbJsonLd, Crumb } from "@/components/Breadcrumbs";
 import { Deal } from "@/lib/types";
 import { Loader2 } from "lucide-react";
@@ -83,7 +83,7 @@ export const HubLayout = ({
       <Header search={search} onSearchChange={setSearch} />
 
       <main className="flex-1">
-        <div className="container py-6 max-w-5xl space-y-5">
+        <div className="container py-6 max-w-6xl space-y-5">
           <Breadcrumbs items={crumbs} />
 
           <header className="space-y-3">
@@ -110,25 +110,14 @@ export const HubLayout = ({
             <p className="py-16 text-center text-muted-foreground">{emptyMessage}</p>
           )}
 
-          <div className="space-y-3">
-            {visibleDeals.map((deal, index) => (
-              <div key={deal.id}>
-                <DealCard deal={deal} />
-                {(index + 1) % 8 === 0 && index < visibleDeals.length - 1 && (
-                  <div className="mt-3">
-                    <AdSlot slot={import.meta.env.VITE_ADSENSE_SLOT_FEED} />
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
+          {visibleDeals.length > 0 && <DealGrid deals={visibleDeals} />}
 
           {visibleDeals.length < deals.length && (
             <div className="flex justify-center pt-2">
               <button
                 type="button"
                 onClick={() => setVisible((v) => v + PAGE_SIZE)}
-                className="rounded-lg bg-primary px-5 py-3 font-heading text-sm font-bold text-primary-foreground shadow-sm transition-all hover:brightness-110"
+                className="rounded-md border border-foreground px-6 py-3 text-sm font-bold text-foreground transition-colors hover:bg-foreground hover:text-background"
               >
                 Carregar mais ofertas
               </button>

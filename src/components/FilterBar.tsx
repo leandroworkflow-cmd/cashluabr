@@ -1,4 +1,3 @@
-import { Clock, ArrowDownNarrowWide, ArrowUpNarrowWide } from "lucide-react";
 import { FilterType, Category, CATEGORIES } from "@/lib/types";
 
 interface FilterBarProps {
@@ -8,46 +7,50 @@ interface FilterBarProps {
   onCategoryChange: (c: Category) => void;
 }
 
-// Apenas critérios de ordenação verificáveis a partir dos dados reais
-// (data e preço). Removemos "mais quentes" / "mais comentadas": eram
-// baseados em números sorteados aleatoriamente, não em engajamento real.
-const filters: { key: FilterType; label: string; icon: React.ReactNode }[] = [
-  { key: "recentes", label: "Mais Recentes", icon: <Clock className="h-4 w-4" /> },
-  { key: "menor-preco", label: "Menor Preço", icon: <ArrowDownNarrowWide className="h-4 w-4" /> },
-  { key: "maior-preco", label: "Maior Preço", icon: <ArrowUpNarrowWide className="h-4 w-4" /> },
+// Só critérios verificáveis a partir dos dados reais (data e preço).
+const SORTS: { key: FilterType; label: string }[] = [
+  { key: "recentes", label: "Mais recentes" },
+  { key: "menor-preco", label: "Menor preço" },
+  { key: "maior-preco", label: "Maior preço" },
 ];
 
 export function FilterBar({ filter, onFilterChange, category, onCategoryChange }: FilterBarProps) {
   return (
     <div className="space-y-3">
-      {/* Filter tabs */}
-      <div className="flex gap-1 bg-card rounded-lg p-1 border border-border overflow-x-auto">
-        {filters.map((f) => (
+      <div role="group" aria-label="Ordenar ofertas" className="flex flex-wrap items-center gap-x-1 gap-y-2">
+        <span className="mr-2 text-sm text-muted-foreground">Ordenar por</span>
+        {SORTS.map((s) => (
           <button
-            key={f.key}
-            onClick={() => onFilterChange(f.key)}
-            className={`flex items-center gap-1.5 px-3 py-2 rounded-md text-sm font-medium whitespace-nowrap transition-all ${
-              filter === f.key
-                ? "bg-primary text-primary-foreground shadow-sm"
-                : "text-muted-foreground hover:text-foreground hover:bg-secondary"
+            key={s.key}
+            type="button"
+            onClick={() => onFilterChange(s.key)}
+            aria-pressed={filter === s.key}
+            className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
+              filter === s.key
+                ? "bg-foreground text-background"
+                : "text-muted-foreground hover:bg-secondary hover:text-foreground"
             }`}
           >
-            {f.icon}
-            {f.label}
+            {s.label}
           </button>
         ))}
       </div>
 
-      {/* Categories */}
-      <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+      <div
+        role="group"
+        aria-label="Filtrar por categoria"
+        className="scrollbar-hide -mx-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:px-0"
+      >
         {CATEGORIES.map((cat) => (
           <button
             key={cat}
+            type="button"
             onClick={() => onCategoryChange(cat)}
-            className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all ${
+            aria-pressed={category === cat}
+            className={`whitespace-nowrap rounded-full border px-3.5 py-1.5 text-sm transition-colors ${
               category === cat
-                ? "bg-foreground text-background"
-                : "bg-secondary text-secondary-foreground hover:bg-border"
+                ? "border-foreground bg-foreground font-medium text-background"
+                : "border-border bg-card text-foreground hover:border-foreground"
             }`}
           >
             {cat}
