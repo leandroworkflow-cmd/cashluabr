@@ -63,8 +63,8 @@ const App = () => (
           <Route path="/r/:code" element={<Redirect />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
+        <CookieBanner />
       </BrowserRouter>
-      <CookieBanner />
     </TooltipProvider>
   </QueryClientProvider>
 );
