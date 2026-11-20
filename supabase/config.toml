@@ -8,3 +8,9 @@ verify_jwt = false
 
 [functions.tg-image]
 verify_jwt = false
+
+[functions.track]
+verify_jwt = false
+
+[functions.analytics-stats]
+verify_jwt = false

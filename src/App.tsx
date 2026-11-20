@@ -1,9 +1,11 @@
+import { Suspense, lazy } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { CookieBanner } from "@/components/CookieBanner";
+import { AnalyticsTracker } from "@/components/AnalyticsTracker";
 import Index from "./pages/Index";
 import DealDetail from "./pages/DealDetail";
 import Profile from "./pages/Profile";
@@ -28,6 +30,8 @@ import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
 import { INTENT_HUBS } from "./lib/seo-taxonomy";
 
+const AdminAnalytics = lazy(() => import("./pages/AdminAnalytics"));
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -36,6 +40,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <AnalyticsTracker />
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/oferta/:slug" element={<DealDetail />} />
@@ -60,6 +65,14 @@ const App = () => (
           {INTENT_HUBS.map((hub) => (
             <Route key={hub.path} path={hub.path} element={<IntentHubPage />} />
           ))}
+          <Route
+            path="/admin/analytics"
+            element={
+              <Suspense fallback={null}>
+                <AdminAnalytics />
+              </Suspense>
+            }
+          />
           <Route path="/r/:code" element={<Redirect />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
